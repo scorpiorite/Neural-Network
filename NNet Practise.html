@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="Resources\NNet Practise.css">
+	<title>
+		Neural Net Major Project
+	</title>
+</head>
+<body id="body">
+	<div id="options">
+		<div class="dropWrapper">
+			<div class="dropTitle"><p3 id="">Network Options</p3></div>
+			<div class="dropContent" onclick="newNet()"><p3>New Network</p3></div>
+			<div class="dropContent" onclick="saveNet()"><p3>Save Network</p3></div>
+			<div class="dropContent" onclick="deleteNet()"><p3>Delete Network</p3></div>
+		</div>
+		<div class="dropWrapper" id="networks">
+			<div class="dropTitle"><p3>Networks</p3></div>
+		</div>
+		<div id="canvasHolder"></div>
+	</div>
+	<div class="output" id="output">
+		<div class="status">
+			<div id="description">
+				<div id="newNet">
+					<div class="layerButton" onclick="newLayer()"><p>New Layer</p></div>
+					<div class="layerButton" onclick="removeLayer()"><p>Remove Layer</p></div>
+					<div class="layerButton" onclick="submitNet()"><p>Submit</p></div>
+					<p3>Name</p3><textarea></textarea><br>
+					<p3>Layer 1</p3><textarea></textarea><br>
+				</div>
+				<div class="details" id="detailsLeft"></div>
+				<div class="details" id="detailsRight"></div>
+				<div class="buttonStretch" onclick="netFunction()"><p id="newDigit">New Digit</p></div>
+				<div class="buttonStretch" onclick="stop()"><p id="stopToggle">Stop</p></div>
+				<div class="buttonStretch" onclick="turboToggle()"><p id="turboToggle">Turbo</p></div>
+			</div>
+		</div>
+		<div class="comparison">
+			<div class="inputDisplay">
+				<div id="BASICDigit">
+					<div class="aimRow">
+						<div class="aimBox" id="aim1"></div>
+						<div class="aimBox" id="aim2"></div>
+						<div class="aimBox" id="aim3"></div>
+					</div>
+					<div class="aimRow">
+						<div class="aimBox" id="aim4"></div>
+						<div class="aimBox" id="aim5"></div>
+						<div class="aimBox" id="aim6"></div>
+					</div>
+					<div class="aimRow">
+						<div class="aimBox" id="aim7"></div>
+						<div class="aimBox" id="aim8"></div>
+						<div class="aimBox" id="aim9"></div>
+					</div>
+					<div class="aimRow">
+						<div class="aimBox" id="aim10"></div>
+						<div class="aimBox" id="aim11"></div>
+						<div class="aimBox" id="aim12"></div>
+					</div>
+					<div class="aimRow">
+						<div class="aimBox" id="aim13"></div>
+						<div class="aimBox" id="aim14"></div>
+						<div class="aimBox" id="aim15"></div>
+					</div>
+				</div>
+				<div id="MNISTDigit">
+					<canvas id="MNISTCanvas"></canvas>
+				</div>
+			</div>
+			<div class="result">
+				<div class="resultPart">
+					<div class="resultBarHeader" id="resultHeader0"><p>0</p></div>
+					<div class="resultBarBox"><div class="resultBar" id="result0"></div></div>
+				</div>
+				<div class="resultPart">
+					<div class="resultBarHeader" id="resultHeader1"><p>1</p></div>
+					<div class="resultBarBox"><div class="resultBar" id="result1"></div></div>
+				</div>
+				<div class="resultPart">
+					<div class="resultBarHeader" id="resultHeader2"><p>2</p></div>
+					<div class="resultBarBox"><div class="resultBar" id="result2"></div></div>
+				</div>
+				<div class="resultPart">
+					<div class="resultBarHeader" id="resultHeader3"><p>3</p></div>
+					<div class="resultBarBox"><div class="resultBar" id="result3"></div></div>
+				</div>
+				<div class="resultPart">
+					<div class="resultBarHeader" id="resultHeader4"><p>4</p></div>
+					<div class="resultBarBox"><div class="resultBar" id="result4"></div></div>
+				</div>
+				<div class="resultPart">
+					<div class="resultBarHeader" id="resultHeader5"><p>5</p></div>
+					<div class="resultBarBox"><div class="resultBar" id="result5"></div></div>
+				</div>
+				<div class="resultPart">
+					<div class="resultBarHeader" id="resultHeader6"><p>6</p></div>
+					<div class="resultBarBox"><div class="resultBar" id="result6"></div></div>
+				</div>
+				<div class="resultPart">
+					<div class="resultBarHeader" id="resultHeader7"><p>7</p></div>
+					<div class="resultBarBox"><div class="resultBar" id="result7"></div></div>
+				</div>
+				<div class="resultPart">
+					<div class="resultBarHeader" id="resultHeader8"><p>8</p></div>
+					<div class="resultBarBox"><div class="resultBar" id="result8"></div></div>
+				</div>
+				<div class="resultPart">
+					<div class="resultBarHeader" id="resultHeader9"><p>9</p></div>
+					<div class="resultBarBox"><div class="resultBar" id="result9"></div></div>
+				</div>
+			</div>
+			<div class="error">
+				<div id="errorBox">
+					<p2 id="error"></p2>
+				</div>
+				<div id="errorCount">
+					<canvas id="graphCanvas"></canvas>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+	<script src="TestNet.js"></script>
+	<script src="Resources\mnist-master\dist\mnist.js"></script>
+	<script src="Resources\NNet Practise.js"></script>
+	<script src="Resources\NeuralNetwork.js"></script>
+	<script src="Resources\p5.js"></script>
+	<script src="Assessed Algorithms.js"></script>
+</html>

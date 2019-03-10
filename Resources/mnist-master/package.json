@@ -1,0 +1,26 @@
+{
+  "name": "mnist",
+  "version": "1.1.0",
+  "description": "mnist digits",
+  "main": "src/mnist.js",
+  "scripts": {
+    "build": "browserify ./src/mnist.js > ./dist/mnist.js"
+  },
+  "devDependencies": {
+    "browserify": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cazala/mnist.git"
+  },
+  "keywords": [
+    "mnist",
+    "digits"
+  ],
+  "author": "Juan Cazala <cazala@mail.sfsu.edu> (http://juancazala.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cazala/mnist/issues"
+  },
+  "homepage": "https://github.com/cazala/mnist"
+}
