@@ -3,7 +3,7 @@ function network(id,detailsArray) {
 	this.id = id
 	this.layer = []
 	this.cost = 0
-	this.LR = 1
+	this.LR = 0.1
 	this.lastCorrects = []
 	
 	this.train = function(inputs,outputs) {
@@ -151,3 +151,25 @@ function neuron(id,layer,network) {
 		this.biasDelta = []
 	}
 }
+
+function network_matrix(id, detailsArray) {
+	this.id = id
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
