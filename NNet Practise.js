@@ -1,4 +1,5 @@
 
+// Please forgive me for my sins
 var networks = []
 var canvasHeight = 0
 var canvasWidth = 0
