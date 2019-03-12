@@ -250,15 +250,6 @@ function network_matrix(id, detailsArray) {
 				}
 			}
 		}
-		
-		//	-BP4-	Delta for Weights
-		for(var i = 0; i < this.layer.length; i++) {
-			for(var j = 0; j < this.layer[i].neuron.length; j++) {
-				for(var n = 0; n < this.layer[i].neuron[j].weight.length; n++) {
-					this.layer[i].neuron[j].weightDelta[n].push(this.layer[i-1].neuron[n].activation*this.layer[i].neuron[j].error)
-				}
-			}
-		}
 	}
 	
 	this.sigmoid = function(x) {
