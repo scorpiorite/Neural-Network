@@ -210,8 +210,7 @@ function network_matrix(id, detailsArray) {
 	}
 	
 	this.error = function(corrects) {//	Further optimisation can be done here by using variables for current layer.length and next/prev. layer.length ect.
-									 //	Further optimisations can also be storing the value of sigmoid_d(value)
-		
+									 //	Further optimisations can also by storing the value of sigmoid_d(value)
 		this.cost = 0
 		
 		//	-BP0-	Cost for Network
@@ -252,6 +251,17 @@ function network_matrix(id, detailsArray) {
 		}
 	}
 	
+	this.adjust = function() {
+		for(var i = 1; i < layers.length; i++) {
+			for(var j = 0; j < layers[i].length; j++) {
+				for(var n = 0; n < this.layers[i][j][1].length; n++) {
+					this.layers[i][j][1][n+1] += this.layers[i][j][2][n+1]
+				}
+				this.layers[i][j][1][0] += this.layers[i][j][2][0]
+			}
+		}
+	}
+	
 	this.sigmoid = function(x) {
 		return(1/(1 + Math.pow(Math.E, -x)))
 	}
@@ -259,6 +269,8 @@ function network_matrix(id, detailsArray) {
 	this.sigmoid_d = function(x) {
 		return(this.sigmoid(x)*(1 - this.sigmoid(x)))
 	}
+	
+	window[id] = this
 	
 	console.log(this)
 	this.update([1,2,3,4,5,6,7,8,9,10])
