@@ -1,6 +1,7 @@
 
 function network(id,detailsArray) {
 	this.id = id
+	this.type = "object"
 	this.layer = []
 	this.cost = 0
 	this.LR = 0.1
@@ -154,6 +155,9 @@ function neuron(id,layer,network) {
 
 function network_matrix(id, detailsArray) {
 	this.id = id
+	this.type = "matrix"
+	this.LR = 1
+	this.lastCorrects = []
 	this.layers = [] // this.layers[layer][neuron][[value, activation, activation_d, error],[bias, weight, weight , weight,...],[bias_D, weight_D, weight_D, weight_D,...]]
 	
 	for(var i = 0; i < detailsArray.length; i++) { //	Build data structure
@@ -186,12 +190,10 @@ function network_matrix(id, detailsArray) {
 	this.update = function(inputs) {
 		if(inputs.length <= this.layers[0].length) { //											Values for 1st Layer
 			for(var i = 0; i < inputs.length; i++) {
-				console.log("a",i)
 				this.layers[0][i] = inputs[i]
 			}
 		} else {
 			for(var i = 0; i < this.layers[0].length; i++) {
-				console.log("b",i)
 				this.layers[0][i] = inputs[i]
 			}
 		}
@@ -230,10 +232,10 @@ function network_matrix(id, detailsArray) {
 		}
 		
 		//	-BP2-	Error for previous layer Neurons
-		for(var i = this.layers.length-2; i > -1; i--) {
+		for(var i = this.layers.length-2; i > 0; i--) {
 			for(var j = 0; j < this.layers[i].length; j++) {
 				this.layers[i][j][0][3] = 0
-				for(var n = 0; n < this.layer[i+1].length; n++) {
+				for(var n = 0; n < this.layers[i+1].length; n++) {
 					this.layers[i][j][0][3] += this.layers[i+1][n][1][j+1]*this.layers[i+1][n][0][3]
 				}
 				this.layers[i][j][0][3] *= this.sigmoid_d(this.layers[i][j][0][0])
@@ -241,29 +243,39 @@ function network_matrix(id, detailsArray) {
 		}
 		
 		//	-BP3-	Delta for Biases
-		for(var i = 0; i < this.layers.length-1; i++) {
+		for(var i = 1; i < this.layers.length-1; i++) {
 			for(var j = 0; j < this.layers[i][j].length; j++) {
 				this.layers[i][j][2][0] += this.layers[i][j][0][3]
 			}
 		}
 		
 		//	-BP4-	Delta for Weights
-		for(var i = 0; i < this.layer.length; i++) {
-			for(var j = 0; j < this.layer[i][j].length; j++) {
-				for(var n = 0; n < this.layers[i][j][1].length-1; n++) {
-					this.layers[i][j][2][n+1] += this.layers[i-1][n][0][1]*this.layers[i][j][0][3]
+		for(var i = 1; i < this.layers.length-1; i++) {
+			if(i > 1) {
+				for(var j = 0; j < this.layers[i][j].length; j++) {
+					for(var n = 0; n < this.layers[i][j][1].length-1; n++) {
+						// this.layers[i][j][2][n+1] += this.layers[i-1][n][0][1]*this.layers[i][j][0][3]
+						this.layers[i][j][2][n+1] -= this.layers[i-1][n][0][1]*this.layers[i][j][0][3]
+					}
+				}
+			} else {
+				for(var j = 0; j < this.layers[i][j].length; j++) {
+					for(var n = 0; n < this.layers[i][j][1].length-1; n++) {
+						// this.layers[i][j][2][n+1] += this.layers[i-1][n][0][1]*this.layers[i][j][0][3]
+						this.layers[i][j][2][n+1] -= this.layers[i-1][n]*this.layers[i][j][0][3]
+					}
 				}
 			}
 		}
 	}
 	
 	this.adjust = function() {
-		for(var i = 1; i < layers.length; i++) {
-			for(var j = 0; j < layers[i].length; j++) {
-				for(var n = 0; n < this.layers[i][j][1].length; n++) {
-					this.layers[i][j][1][n+1] += this.layers[i][j][2][n+1]
+		for(var i = 1; i < this.layers.length; i++) {
+			for(var j = 0; j < this.layers[i].length; j++) {
+				for(var n = 0; n < this.layers[i][j][1].length-1; n++) {
+					this.layers[i][j][1][n+1] += this.layers[i][j][2][n+1]*this.LR
 				}
-				this.layers[i][j][1][0] += this.layers[i][j][2][0]
+				this.layers[i][j][1][0] += this.layers[i][j][2][0]*this.LR
 			}
 		}
 	}
@@ -277,9 +289,6 @@ function network_matrix(id, detailsArray) {
 	}
 	
 	window[id] = this
-	
-	console.log(this)
-	this.update([1,2,3,4,5,6,7,8,9,10])
 }
 
 

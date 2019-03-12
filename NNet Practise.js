@@ -72,7 +72,8 @@ function setup() { //P5js calls this function on start-up
 
 	selectedNet = 0
 	
-	networks.push(parseNetwork(testNetString))
+	//networks.push(parseNetwork(testNetString))
+	networks.push(new network_matrix("test_matrix",[784,18,18,10]))
 	
 	loadNets()
 	
@@ -99,19 +100,19 @@ function draw() { //P5js loops this function 60 times per second (as defined by 
 	}
 	
 	if(render === 1) {
-		drawNet(networks[selectedNet])
+		//drawNet(networks[selectedNet])
 	}
 	
-	for(var i = 0; i < networks[selectedNet].layer[networks[selectedNet].layer.length-1].neuron.length; i++) {
-		document.getElementById('result' + i).style.height = networks[selectedNet].layer[networks[selectedNet].layer.length-1].neuron[i].activation*100 + "%"
-		if(i === input) {
-			document.getElementById('resultHeader' + i).style.color = 'white'
-			document.getElementById('resultHeader' + i).style.background = 'darkgrey'
-		} else {
-			document.getElementById('resultHeader' + i).style.color = 'black'
-			document.getElementById('resultHeader' + i).style.background = 'lightgrey'
-		}
-	}
+	// for(var i = 0; i < networks[selectedNet].layer[networks[selectedNet].layer.length-1].neuron.length; i++) {
+		// document.getElementById('result' + i).style.height = networks[selectedNet].layer[networks[selectedNet].layer.length-1].neuron[i].activation*100 + "%"
+		// if(i === input) {
+			// document.getElementById('resultHeader' + i).style.color = 'white'
+			// document.getElementById('resultHeader' + i).style.background = 'darkgrey'
+		// } else {
+			// document.getElementById('resultHeader' + i).style.color = 'black'
+			// document.getElementById('resultHeader' + i).style.background = 'lightgrey'
+		// }
+	// }
 	
 	if(networks[selectedNet].lastCorrects.length > 1000) {
 		networks[selectedNet].lastCorrects.length = 1000
@@ -571,12 +572,12 @@ function MNISTParse(number) { //Generates some of the required Input data for MN
 	
 	maxValue = 0
 	maxIndex = 0
-	for(var i = 0; i < networks[selectedNet].layer[networks[selectedNet].layer.length-1].neuron.length; i++) {
-		if(maxValue < networks[selectedNet].layer[networks[selectedNet].layer.length-1].neuron[i].activation) {
-			maxValue = networks[selectedNet].layer[networks[selectedNet].layer.length-1].neuron[i].activation
-			maxIndex = i
-		}
-	}
+	// for(var i = 0; i < networks[selectedNet].layer[networks[selectedNet].layer.length-1].neuron.length; i++) {
+		// if(maxValue < networks[selectedNet].layer[networks[selectedNet].layer.length-1].neuron[i].activation) {
+			// maxValue = networks[selectedNet].layer[networks[selectedNet].layer.length-1].neuron[i].activation
+			// maxIndex = i
+		// }
+	// }
 	if(maxIndex === number) {
 		networks[selectedNet].lastCorrects.unshift(1)
 	} else {
