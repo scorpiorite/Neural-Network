@@ -207,6 +207,53 @@ function network_matrix(id, detailsArray) {
 		}
 	}
 	
+	this.error = function(corrects) {
+		
+		this.cost = 0
+		
+		//	-BP0-	Cost for Network
+		for(var i = 0; i < this.layers[this.layers.length-1].length; i++) {
+			this.cost += Math.pow(corrects[i] - this.layers[this.layers.length-1][i][0][1],2)*0.5
+		}
+		
+		//	-BP1-	Error for last layer Neurons
+		for(var i = 0; i < this.layers[this.layers.length-1].length; i++) {
+			
+		}
+		
+		//	-BP1-	Error for last layer Neurons
+		for(var i = 0; i < this.layer[this.layer.length-1].neuron.length; i++) {
+			this.layer[this.layer.length-1].neuron[i].error = (this.layer[this.layer.length-1].neuron[i].activation - expectedArray[i])*this.deActivate(this.layer[this.layer.length-1].neuron[i].value)
+		}
+		
+		//	-BP2-	Error for previous layer Neurons
+		for(var i = this.layer.length-2; i > -1; i--) {
+			for(var j = 0; j < this.layer[i].neuron.length; j++) {
+				this.layer[i].neuron[j].error = 0
+				for(var n = 0; n < this.layer[i+1].neuron.length; n++) {
+					this.layer[i].neuron[j].error += this.layer[i+1].neuron[n].weight[j]*this.layer[i+1].neuron[n].error
+				}
+				this.layer[i].neuron[j].error *= this.deActivate(this.layer[i].neuron[j].value)
+			}
+		}
+		
+		//	-BP3-	Delta for Biases
+		for(var i = 0; i < this.layer.length-1; i++) {
+			for(var j = 0; j < this.layer[i].neuron.length; j++) {
+				this.layer[i].neuron[j].biasDelta.push(this.layer[i].neuron[j].error)
+			}
+		}
+		
+		//	-BP4-	Delta for Weights
+		for(var i = 0; i < this.layer.length; i++) {
+			for(var j = 0; j < this.layer[i].neuron.length; j++) {
+				for(var n = 0; n < this.layer[i].neuron[j].weight.length; n++) {
+					this.layer[i].neuron[j].weightDelta[n].push(this.layer[i-1].neuron[n].activation*this.layer[i].neuron[j].error)
+				}
+			}
+		}
+	}
+	
 	this.sigmoid = function(x) {
 		return(1/(1 + Math.pow(Math.E, -x)))
 	}
