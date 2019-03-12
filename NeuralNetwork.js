@@ -154,7 +154,59 @@ function neuron(id,layer,network) {
 
 function network_matrix(id, detailsArray) {
 	this.id = id
+	this.layers = [] // this.layers[layer][neuron][[value, activation, activation_d, error],[bias, weight, weight ,weight,...]]
 	
+	for(var i = 0; i < detailsArray.length; i++) {
+		this.layers.push(new Array(detailsArray[i]))
+	}
+	
+	for(var i = 1; i < this.layers.length; i++) {
+		for(var j = 0; j < this.layers[i].length; j++) {
+			this.layers[i][j] = [[0,0,0,0],new Array(this.layers[i-1].length + 1)]
+		}
+	}
+	
+	this.update = function(inputs) {
+		if(inputs.length <= this.layers[0].length) { //												Values for 1st Layer
+			for(var i = 0; i < inputs.length; i++) {
+				console.log("a",i)
+				this.layers[0][i] = inputs[i]
+			}
+		} else {
+			for(var i = 0; i < this.layers[0].length; i++) {
+				console.log("b",i)
+				this.layers[0][i] = inputs[i]
+			}
+		}
+		
+		for(var j = 0; j < this.layers[1].length; j++) { //											Values for 2nd Layer
+			for(var n = 0; n < this.layers[1-1].length; n++) {
+				this.layers[1][j][0][0] += this.layers[0][n]*this.layers[1][j][1][n+1]
+			}
+			this.layers[1][j][0][0] += this.layers[1][j][1][0]
+			this.layers[1][j][0][0] = this.sigmoid(this.layers[1][j][0][1])
+		}
+		
+		for(var i = 2; i < this.layers.length; i++) { // 											Values for 3rd+ Layer
+			for(var j = 0; j < this.layers[i].length; j++) {
+				for(var n = 0; n < this.layers[i-1].length; n++) {
+					this.layers[i][j][0][0] += this.layers[i-1][n][0][1]*this.layers[i][j][1][n+1]
+				}
+				this.layers[i][j][0][0] += this.layers[i][j][1][0]
+				this.layers[i][j][0][1] = this.sigmoid(this.layers[i][j][0][0])
+			}
+		}
+	}
+	
+	this.sigmoid = function(x) {
+		return(1/(1 + Math.pow(Math.E, -x)))
+	}
+	
+	this.sigmoid_d = function(x) {
+		return(this.sigmoid(x)*(1 - this.sigmoid(x)))
+	}
+	
+	console.log(this)
 }
 
 
