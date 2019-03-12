@@ -177,6 +177,12 @@ function network_matrix(id, detailsArray) {
 		}
 	}
 	
+	this.train = function(inputs,outputs) {
+		this.update(inputs)
+		this.error(outputs)
+		this.adjust()
+	}
+	
 	this.update = function(inputs) {
 		if(inputs.length <= this.layers[0].length) { //											Values for 1st Layer
 			for(var i = 0; i < inputs.length; i++) {
