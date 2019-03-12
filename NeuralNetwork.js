@@ -243,30 +243,38 @@ function network_matrix(id, detailsArray) {
 		}
 		
 		//	-BP3-	Delta for Biases
-		for(var i = 1; i < this.layers.length-1; i++) {
+		for(var i = 1; i < this.layers.length; i++) {
 			for(var j = 0; j < this.layers[i][j].length; j++) {
-				this.layers[i][j][2][0] += this.layers[i][j][0][3]
+				this.layers[i][j][2][0] -= this.layers[i][j][0][3]
 			}
 		}
 		
 		//	-BP4-	Delta for Weights
-		for(var i = 1; i < this.layers.length-1; i++) {
+		for(var i = 1; i < this.layers.length; i++) {
 			if(i > 1) {
+			// if(true) {
 				for(var j = 0; j < this.layers[i][j].length; j++) {
 					for(var n = 0; n < this.layers[i][j][1].length-1; n++) {
-						// this.layers[i][j][2][n+1] += this.layers[i-1][n][0][1]*this.layers[i][j][0][3]
 						this.layers[i][j][2][n+1] -= this.layers[i-1][n][0][1]*this.layers[i][j][0][3]
 					}
 				}
 			} else {
 				for(var j = 0; j < this.layers[i][j].length; j++) {
 					for(var n = 0; n < this.layers[i][j][1].length-1; n++) {
-						// this.layers[i][j][2][n+1] += this.layers[i-1][n][0][1]*this.layers[i][j][0][3]
 						this.layers[i][j][2][n+1] -= this.layers[i-1][n]*this.layers[i][j][0][3]
 					}
 				}
 			}
 		}
+		
+		//	-BP4-	Delta for Weights
+		// for(var i = 0; i < this.layer.length; i++) {
+			// for(var j = 0; j < this.layer[i].neuron.length; j++) {
+				// for(var n = 0; n < this.layer[i].neuron[j].weight.length; n++) {
+					// this.layer[i].neuron[j].weightDelta[n].push(this.layer[i-1].neuron[n].activation*this.layer[i].neuron[j].error)
+				// }
+			// }
+		// }
 	}
 	
 	this.adjust = function() {
