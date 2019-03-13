@@ -156,7 +156,7 @@ function neuron(id,layer,network) {
 function network_matrix(id, detailsArray) {
 	this.id = id
 	this.type = "matrix"
-	this.LR = 1
+	this.LR = 0.1
 	this.lastCorrects = []
 	this.layers = [] // this.layers[layer][neuron][[value, activation, activation_d, error],[bias, weight, weight , weight,...],[bias_D, weight_D, weight_D, weight_D,...]]
 	
@@ -173,7 +173,7 @@ function network_matrix(id, detailsArray) {
 	for(var i = 1; i < this.layers.length; i++) { // 	Initialise Random Weights and Biases
 		for(var j = 0; j < this.layers[i].length; j++) {
 			for(var n = 0; n < this.layers[i][j][1].length-1; n++) {
-				this.layers[i][j][1][n+1] = (Math.random()-0.5)*2
+				this.layers[i][j][1][n+1] = (Math.random()-0.5)*0.5
 				this.layers[i][j][2][n+1] = 0
 			}
 			this.layers[i][j][1][0] = 0
@@ -199,6 +199,7 @@ function network_matrix(id, detailsArray) {
 		}
 		
 		for(var j = 0; j < this.layers[1].length; j++) { //										Values for 2nd Layer
+			this.layers[1][j][0][0] = 0
 			for(var n = 0; n < this.layers[0].length; n++) {
 				this.layers[1][j][0][0] += this.layers[0][n]*this.layers[1][j][1][n+1]
 			}
@@ -208,6 +209,7 @@ function network_matrix(id, detailsArray) {
 		
 		for(var i = 2; i < this.layers.length; i++) { // 										Values for 3rd+ Layer
 			for(var j = 0; j < this.layers[i].length; j++) {
+				this.layers[i][j][0][0] = 0
 				for(var n = 0; n < this.layers[i-1].length; n++) {
 					this.layers[i][j][0][0] += this.layers[i-1][n][0][1]*this.layers[i][j][1][n+1]
 				}
@@ -244,7 +246,7 @@ function network_matrix(id, detailsArray) {
 		
 		//	-BP3-	Delta for Biases
 		for(var i = 1; i < this.layers.length; i++) {
-			for(var j = 0; j < this.layers[i][j].length; j++) {
+			for(var j = 0; j < this.layers[i].length; j++) {
 				this.layers[i][j][2][0] -= this.layers[i][j][0][3]
 			}
 		}
@@ -253,28 +255,19 @@ function network_matrix(id, detailsArray) {
 		for(var i = 1; i < this.layers.length; i++) {
 			if(i > 1) {
 			// if(true) {
-				for(var j = 0; j < this.layers[i][j].length; j++) {
+				for(var j = 0; j < this.layers[i].length; j++) {
 					for(var n = 0; n < this.layers[i][j][1].length-1; n++) {
 						this.layers[i][j][2][n+1] -= this.layers[i-1][n][0][1]*this.layers[i][j][0][3]
 					}
 				}
 			} else {
-				for(var j = 0; j < this.layers[i][j].length; j++) {
+				for(var j = 0; j < this.layers[i].length; j++) {
 					for(var n = 0; n < this.layers[i][j][1].length-1; n++) {
 						this.layers[i][j][2][n+1] -= this.layers[i-1][n]*this.layers[i][j][0][3]
 					}
 				}
 			}
 		}
-		
-		//	-BP4-	Delta for Weights
-		// for(var i = 0; i < this.layer.length; i++) {
-			// for(var j = 0; j < this.layer[i].neuron.length; j++) {
-				// for(var n = 0; n < this.layer[i].neuron[j].weight.length; n++) {
-					// this.layer[i].neuron[j].weightDelta[n].push(this.layer[i-1].neuron[n].activation*this.layer[i].neuron[j].error)
-				// }
-			// }
-		// }
 	}
 	
 	this.adjust = function() {
@@ -282,8 +275,10 @@ function network_matrix(id, detailsArray) {
 			for(var j = 0; j < this.layers[i].length; j++) {
 				for(var n = 0; n < this.layers[i][j][1].length-1; n++) {
 					this.layers[i][j][1][n+1] += this.layers[i][j][2][n+1]*this.LR
+					this.layers[i][j][2][n+1] = 0
 				}
 				this.layers[i][j][1][0] += this.layers[i][j][2][0]*this.LR
+				this.layers[i][j][2][0] = 0
 			}
 		}
 	}
@@ -298,20 +293,3 @@ function network_matrix(id, detailsArray) {
 	
 	window[id] = this
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -154,6 +154,22 @@ function draw() { //P5js loops this function 60 times per second (as defined by 
 	}
 }
 
+function netTemp(x) {
+	networks[x].layers[1][0][1][1] = 0.15
+	networks[x].layers[1][0][1][2] = 0.2
+	networks[x].layers[1][1][1][1] = 0.25
+	networks[x].layers[1][1][1][2] = 0.3
+	networks[x].layers[1][0][1][0] = 0.35
+	networks[x].layers[1][1][1][0] = 0.35
+	
+	networks[x].layers[2][0][1][1] = 0.4
+	networks[x].layers[2][0][1][2] = 0.45
+	networks[x].layers[2][1][1][1] = 0.5
+	networks[x].layers[2][1][1][2] = 0.55
+	networks[x].layers[2][0][1][0] = 0.6
+	networks[x].layers[2][1][1][0] = 0.6
+}
+
 function newNet() { //Opens 'new Network' IU, attached to 'New Network' Button
 	document.getElementById('newNet').style.display = 'block'
 	document.getElementById('detailsLeft').style.display = 'none'
@@ -572,6 +588,14 @@ function MNISTParse(number) { //Generates some of the required Input data for MN
 	
 	maxValue = 0
 	maxIndex = 0
+	
+	for(var i = 0; i < networks[selectedNet].layers[networks[selectedNet].layers.length-1].length; i++) {
+		if(maxValue < networks[selectedNet].layers[networks[selectedNet].layers.length-1][i][0][1]) {
+			maxValue = networks[selectedNet].layers[networks[selectedNet].layers.length-1][i][0][1]
+			maxIndex = i
+		}
+	}
+	
 	// for(var i = 0; i < networks[selectedNet].layer[networks[selectedNet].layer.length-1].neuron.length; i++) {
 		// if(maxValue < networks[selectedNet].layer[networks[selectedNet].layer.length-1].neuron[i].activation) {
 			// maxValue = networks[selectedNet].layer[networks[selectedNet].layer.length-1].neuron[i].activation
