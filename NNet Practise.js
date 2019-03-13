@@ -146,10 +146,8 @@ function draw() { //P5js loops this function 60 times per second (as defined by 
 	}
 	
 	if(turbo === true) {
-		if(frameRate() < 60) {
-			learnRate *= 0.9
-		} else if(frameRate() > 70) {
-			learnRate *= 1.1
+		for(var i = 0; i < 10; i++) {
+			netFunction()
 		}
 	}
 }
@@ -352,6 +350,10 @@ function netFunction() { //Manages the function of the active Network
 	}
 }
 
+function turboLoop() {
+	// Nothing right now
+}
+
 function turboToggle() { //Manages TurboMode, attached to 'Turbo' Button
 	
 	if(turbo === true) {
@@ -373,6 +375,7 @@ function turboToggle() { //Manages TurboMode, attached to 'Turbo' Button
 		if(document.getElementById('stopToggle').innerHTML === 'Go') {
 			document.getElementById('stopToggle').innerHTML = 'Stop'
 		}
+		turboLoop()
 	}
 }
 

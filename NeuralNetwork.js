@@ -1,4 +1,6 @@
 
+const gpu = new GPU()
+
 function network(id,detailsArray) {
 	this.id = id
 	this.type = "object"
@@ -254,7 +256,6 @@ function network_matrix(id, detailsArray) {
 		//	-BP4-	Delta for Weights
 		for(var i = 1; i < this.layers.length; i++) {
 			if(i > 1) {
-			// if(true) {
 				for(var j = 0; j < this.layers[i].length; j++) {
 					for(var n = 0; n < this.layers[i][j][1].length-1; n++) {
 						this.layers[i][j][2][n+1] -= this.layers[i-1][n][0][1]*this.layers[i][j][0][3]
