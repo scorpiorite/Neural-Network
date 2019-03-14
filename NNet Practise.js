@@ -103,16 +103,16 @@ function draw() { //P5js loops this function 60 times per second (as defined by 
 		//drawNet(networks[selectedNet])
 	}
 	
-	// for(var i = 0; i < networks[selectedNet].layer[networks[selectedNet].layer.length-1].neuron.length; i++) {
-		// document.getElementById('result' + i).style.height = networks[selectedNet].layer[networks[selectedNet].layer.length-1].neuron[i].activation*100 + "%"
-		// if(i === input) {
-			// document.getElementById('resultHeader' + i).style.color = 'white'
-			// document.getElementById('resultHeader' + i).style.background = 'darkgrey'
-		// } else {
-			// document.getElementById('resultHeader' + i).style.color = 'black'
-			// document.getElementById('resultHeader' + i).style.background = 'lightgrey'
-		// }
-	// }
+	for(var i = 0; i < networks[selectedNet].layers[networks[selectedNet].layers.length-1].length; i++) {
+		document.getElementById('result' + i).style.height = networks[selectedNet].layers[networks[selectedNet].layers.length-1][i][0][1]*100 + "%"
+		if(i === input) {
+			document.getElementById('resultHeader' + i).style.color = 'white'
+			document.getElementById('resultHeader' + i).style.background = 'darkgrey'
+		} else {
+			document.getElementById('resultHeader' + i).style.color = 'black'
+			document.getElementById('resultHeader' + i).style.background = 'lightgrey'
+		}
+	}
 	
 	if(networks[selectedNet].lastCorrects.length > 1000) {
 		networks[selectedNet].lastCorrects.length = 1000
