@@ -615,8 +615,10 @@ function MNISTParse(number) { //Generates some of the required Input data for MN
 }
 
 function drawNet(net) { //Renders the active Network with the help of P5js
-	
-	var cols = net.layer.length
+						//Neuron Position data does not exist with new model -> must be updated
+						//Perhaps redesign entire rednering engine
+
+	var cols = net.layers.length
 	var colWidth = width/cols
 	var rows = 0
 	var rowHeight = 0
@@ -626,90 +628,90 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 	
 	if(mouseIsPressed && scrollBar.clicked === true && scrollBar.pos >= 0 && scrollBar.pos <= height-scrollBar.length) {
 		scrollBar.pos = mouseY - scrollBar.clickPos
-		net.layer[0].displayOffset = -(scrollBar.pos/(height-scrollBar.length))*(net.layer[0].neuron.length*nodeRadius*3 - height)
+		net.layers[0].displayOffset = -(scrollBar.pos/(height-scrollBar.length))*(net.layers[0].length*nodeRadius*3 - height)
 	} else if(mouseIsPressed && scrollBar.clicked === true && scrollBar.pos < 0) {
 		scrollBar.clicked = false
 		scrollBar.pos = 0
-		net.layer[0].displayOffset = -(scrollBar.pos/(height-scrollBar.length))*(net.layer[0].neuron.length*nodeRadius*3 - height)
+		net.layers[0].displayOffset = -(scrollBar.pos/(height-scrollBar.length))*(net.layers[0].length*nodeRadius*3 - height)
 	} else if(mouseIsPressed && scrollBar.clicked === true && scrollBar.pos > height-scrollBar.length) {
 		scrollBar.clicked = false
 		scrollBar.pos = height - scrollBar.length
-		net.layer[0].displayOffset = -(scrollBar.pos/(height-scrollBar.length))*(net.layer[0].neuron.length*nodeRadius*3 - height)
+		net.layers[0].displayOffset = -(scrollBar.pos/(height-scrollBar.length))*(net.layers[0].length*nodeRadius*3 - height)
 	}
 	
-	scrollBar.pos = (-net.layer[0].displayOffset/(net.layer[0].neuron.length*nodeRadius*3 - height))*(height-scrollBar.length)
+	scrollBar.pos = (-net.layers[0].displayOffset/(net.layers[0].length*nodeRadius*3 - height))*(height-scrollBar.length)
 	stroke(119,187,221)
 	fill(119,187,221)
 	rect(0,scrollBar.pos,scrollBar.width,scrollBar.length)
 	
-	for(var i = 0; i < net.layer.length; i++) {
-		if(height < net.layer[i].neuron.length*3*nodeRadius) {
-			for(var j = 0; j < net.layer[i].neuron.length; j++) {
-				net.layer[i].neuron[j].pos.x = colWidth*i + colWidth/2
-				net.layer[i].neuron[j].pos.y = nodeRadius*3*j + nodeRadius*3/2 + net.layer[i].displayOffset
+	for(var i = 0; i < net.layers.length; i++) {
+		if(height < net.layers[i].length*3*nodeRadius) {
+			for(var j = 0; j < net.layers[i].length; j++) {
+				net.layers[i][j].pos.x = colWidth*i + colWidth/2
+				net.layers[i][j].pos.y = nodeRadius*3*j + nodeRadius*3/2 + net.layers[i].displayOffset
 			}
 		} else {
-			for(var j = 0; j < net.layer[i].neuron.length; j++) {
-				net.layer[i].neuron[j].pos.x = colWidth*i + colWidth/2
-				net.layer[i].neuron[j].pos.y = (height/net.layer[i].neuron.length)*j + (height/net.layer[i].neuron.length)/2
+			for(var j = 0; j < net.layers[i].length; j++) {
+				net.layers[i][j].pos.x = colWidth*i + colWidth/2
+				net.layers[i][j].pos.y = (height/net.layers[i].length)*j + (height/net.layers[i].length)/2
 			}
 		}
-		if(net.layer[i].neuron.length > height/nodeRadius/3 && i > 0) {
-			for(var j = - Math.ceil(net.layer[i].displayOffset/nodeRadius/3); j < height/nodeRadius/3 - net.layer[i].displayOffset/nodeRadius/3; j++) {
-				if(net.layer[i-1].neuron.length > height/nodeRadius/3 && j < net.layer[i].neuron.length && j >= 0) {
-					for(var n = - Math.ceil(net.layer[i-1].displayOffset/nodeRadius/3); n < height/nodeRadius/3 - net.layer[i-1].displayOffset/nodeRadius/3; n++) {
-						if(n < net.layer[i-1].neuron.length && n >= 0) {
-							if(net.layer[i].neuron[j].selectedIndex == n) {
+		if(net.layers[i].length > height/nodeRadius/3 && i > 0) {
+			for(var j = - Math.ceil(net.layers[i].displayOffset/nodeRadius/3); j < height/nodeRadius/3 - net.layers[i].displayOffset/nodeRadius/3; j++) {
+				if(net.layers[i-1].length > height/nodeRadius/3 && j < net.layers[i].length && j >= 0) {
+					for(var n = - Math.ceil(net.layers[i-1].displayOffset/nodeRadius/3); n < height/nodeRadius/3 - net.layers[i-1].displayOffset/nodeRadius/3; n++) {
+						if(n < net.layers[i-1].length && n >= 0) {
+							if(net.layers[i][j].selectedIndex == n) {
 								stroke(255,0,0)
-							} else if(net.layer[i].neuron[j].weight[n] > 0) {
-								stroke(255-(net.activate(net.layer[i].neuron[j].weight[n])-0.5)*2*255,255,255)
+							} else if(net.layers[i][j].weight[n] > 0) {
+								stroke(255-(net.activate(net.layers[i][j].weight[n])-0.5)*2*255,255,255)
 							} else {
-								stroke(net.activate(net.layer[i].neuron[j].weight[n])*2*255,net.activate(net.layer[i].neuron[j].weight[n])*2*255,255)
+								stroke(net.activate(net.layers[i][j].weight[n])*2*255,net.activate(net.layers[i][j].weight[n])*2*255,255)
 							}
-							line(net.layer[i].neuron[j].pos.x-nodeRadius,net.layer[i].neuron[j].pos.y,net.layer[i-1].neuron[n].pos.x+nodeRadius,net.layer[i-1].neuron[n].pos.y)
+							line(net.layers[i][j].pos.x-nodeRadius,net.layers[i][j].pos.y,net.layers[i-1][n].pos.x+nodeRadius,net.layers[i-1][n].pos.y)
 						}
 					}
-				} else if(j < net.layer[i].neuron.length && j >= 0) {
-					for(var n = 0; n < net.layer[i-1].neuron.length; n++) {
-						if(n < net.layer[i-1].neuron.length) {
-							if(net.layer[i].neuron[j].selectedIndex == n) {
+				} else if(j < net.layers[i].length && j >= 0) {
+					for(var n = 0; n < net.layers[i-1].length; n++) {
+						if(n < net.layers[i-1].length) {
+							if(net.layers[i][j].selectedIndex == n) {
 								stroke(255,0,0)
-							} else if(net.layer[i].neuron[j].weight[n] > 0) {
-								stroke(255-(net.activate(net.layer[i].neuron[j].weight[n])-0.5)*2*255,255,255)
+							} else if(net.layers[i][j].weight[n] > 0) {
+								stroke(255-(net.activate(net.layers[i][j].weight[n])-0.5)*2*255,255,255)
 							} else {
-								stroke(net.activate(net.layer[i].neuron[j].weight[n])*2*255,net.activate(net.layer[i].neuron[j].weight[n])*2*255,255)
+								stroke(net.activate(net.layers[i][j].weight[n])*2*255,net.activate(net.layers[i][j].weight[n])*2*255,255)
 							}
-							line(net.layer[i].neuron[j].pos.x-nodeRadius,net.layer[i].neuron[j].pos.y,net.layer[i-1].neuron[n].pos.x+nodeRadius,net.layer[i-1].neuron[n].pos.y)
+							line(net.layers[i][j].pos.x-nodeRadius,net.layers[i][j].pos.y,net.layers[i-1][n].pos.x+nodeRadius,net.layers[i-1][n].pos.y)
 						}
 					}
 				}
 			}
 		} else if(i > 0) {
-			for(var j = 0; j < net.layer[i].neuron.length; j++) {
-				if(net.layer[i-1].neuron.length > height/nodeRadius/3) {
-					for(var n = - Math.ceil(net.layer[i-1].displayOffset/nodeRadius/3); n < height/nodeRadius/3 - net.layer[i-1].displayOffset/nodeRadius/3; n++) {
-						if(n < net.layer[i-1].neuron.length && n >= 0) {
-							if(net.layer[i].neuron[j].selectedIndex == n) {
+			for(var j = 0; j < net.layers[i].length; j++) {
+				if(net.layers[i-1].length > height/nodeRadius/3) {
+					for(var n = - Math.ceil(net.layers[i-1].displayOffset/nodeRadius/3); n < height/nodeRadius/3 - net.layers[i-1].displayOffset/nodeRadius/3; n++) {
+						if(n < net.layers[i-1].length && n >= 0) {
+							if(net.layers[i][j].selectedIndex == n) {
 								stroke(255,0,0)
-							} else if(net.layer[i].neuron[j].weight[n] > 0) {
-								stroke(255-(net.activate(net.layer[i].neuron[j].weight[n])-0.5)*2*255,255,255)
+							} else if(net.layers[i][j].weight[n] > 0) {
+								stroke(255-(net.activate(net.layers[i][j].weight[n])-0.5)*2*255,255,255)
 							} else {
-								stroke(net.activate(net.layer[i].neuron[j].weight[n])*2*255,net.activate(net.layer[i].neuron[j].weight[n])*2*255,255)
+								stroke(net.activate(net.layers[i][j].weight[n])*2*255,net.activate(net.layers[i][j].weight[n])*2*255,255)
 							}
-							line(net.layer[i].neuron[j].pos.x-nodeRadius,net.layer[i].neuron[j].pos.y,net.layer[i-1].neuron[n].pos.x+nodeRadius,net.layer[i-1].neuron[n].pos.y)
+							line(net.layers[i][j].pos.x-nodeRadius,net.layers[i][j].pos.y,net.layers[i-1][n].pos.x+nodeRadius,net.layers[i-1][n].pos.y)
 						}
 					}
 				} else {
-					for(var n = 0; n < net.layer[i-1].neuron.length; n++) {
-						if(n < net.layer[i-1].neuron.length) {
-							if(net.layer[i].neuron[j].selectedIndex == n) {
+					for(var n = 0; n < net.layers[i-1].length; n++) {
+						if(n < net.layers[i-1].length) {
+							if(net.layers[i][j].selectedIndex == n) {
 								stroke(255,0,0)
-							} else if(net.layer[i].neuron[j].weight[n] > 0) {
-								stroke(255-(net.activate(net.layer[i].neuron[j].weight[n])-0.5)*2*255,255,255)
+							} else if(net.layers[i][j].weight[n] > 0) {
+								stroke(255-(net.activate(net.layers[i][j].weight[n])-0.5)*2*255,255,255)
 							} else {
-								stroke(net.activate(net.layer[i].neuron[j].weight[n])*2*255,net.activate(net.layer[i].neuron[j].weight[n])*2*255,255)
+								stroke(net.activate(net.layers[i][j].weight[n])*2*255,net.activate(net.layers[i][j].weight[n])*2*255,255)
 							}
-							line(net.layer[i].neuron[j].pos.x-nodeRadius,net.layer[i].neuron[j].pos.y,net.layer[i-1].neuron[n].pos.x+nodeRadius,net.layer[i-1].neuron[n].pos.y)
+							line(net.layers[i][j].pos.x-nodeRadius,net.layers[i][j].pos.y,net.layers[i-1][n].pos.x+nodeRadius,net.layers[i-1][n].pos.y)
 						}
 					}
 				}
@@ -718,9 +720,9 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 	}
 	
 	for(var i = 0; i < cols; i++) {
-		rows = net.layer[i].neuron.length
-		for(var j = 0; j < net.layer[i].neuron.length; j++) {
-			drawNode(net.layer[i].neuron[j].pos.x,net.layer[i].neuron[j].pos.y,net.layer[i].neuron[j].activation.toFixed(2),net.layer[i].neuron[j].selected)
+		rows = net.layers[i].length
+		for(var j = 0; j < net.layers[i].length; j++) {
+			drawNode(net.layers[i][j].pos.x,net.layers[i][j].pos.y,net.layers[i][j].activation.toFixed(2),net.layers[i][j].selected)
 		}
 	}
 }
