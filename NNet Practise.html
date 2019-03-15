@@ -33,7 +33,13 @@
 				<div class="details" id="detailsRight"></div>
 				<div class="buttonStretch" onclick="netFunction()"><p id="newDigit">New Digit</p></div>
 				<div class="buttonStretch" onclick="stop()"><p id="stopToggle">Stop</p></div>
-				<div class="buttonStretch" onclick="turboToggle()"><p id="turboToggle">Turbo</p></div>
+				<div class="buttonStretch">
+					<p id="turboToggle">Turbo</p>
+					<p id="turboMultiplier">x1</p>
+					<div class="slideContainer">
+						<input type="range" min="1" max="100" value="1" class="slider" id="turboSlider"></input>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="comparison">

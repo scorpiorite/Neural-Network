@@ -23,7 +23,7 @@ var render = 1
 var LTask = 2
 var LMethod = 2
 var selectedNet
-var turbo = false
+var turbo = 1
 var countB = 0
 var scrollBar = {pos: 0, length: 50, width: 10, clicked: false, clickPos: 0}
 var loadingNet
@@ -145,11 +145,7 @@ function draw() { //P5js loops this function 60 times per second (as defined by 
 		}
 	}
 	
-	if(turbo === true) {
-		for(var i = 0; i < 10; i++) {
-			netFunction()
-		}
-	}
+	document.getElementById('turboMultiplier').innerHTML = 'x' + document.getElementById('turboSlider').value
 }
 
 function netTemp(x) {
@@ -345,13 +341,19 @@ function netFunction() { //Manages the function of the active Network
 		input = Math.floor(Math.random()*10)
 		BASICParse(input)
 	} else if (LTask === 2) {
-		input = Math.floor(Math.random()*10)
-		MNISTParse(input)
+		for(var i = 0; i < document.getElementById('turboSlider').value; i++) {
+			input = Math.floor(Math.random()*10)
+			MNISTParse(input)
+		}
 	}
 }
 
 function turboLoop() {
 	// Nothing right now
+	// if(turbo === true) {
+		// window.requestAnimationFrame(window.setTimeout(turboLoop(),1000))
+		// netFunction()
+	// }
 }
 
 function turboToggle() { //Manages TurboMode, attached to 'Turbo' Button
