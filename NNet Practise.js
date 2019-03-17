@@ -16,18 +16,22 @@ var nodeRadius = 20
 var weightGraph = 200
 var errorAverage = 0
 var cost = 0
-var learnRate = 0
+var learn = false
 var speedA = 1
 var speedOflo = 0
 var render = 1
 var LTask = 2
 var LMethod = 2
 var selectedNet
-var turbo = 1
+var turbo = false
+var turboBuffer = 0
 var countB = 0
 var scrollBar = {pos: 0, length: 50, width: 10, clicked: false, clickPos: 0}
 var loadingNet
 var savedNets
+var benchThis = 0
+var benchLast = 0
+var benchDiff = 0
 
 function setup() { //P5js calls this function on start-up
 	
@@ -84,18 +88,9 @@ function draw() { //P5js loops this function 60 times per second (as defined by 
 	
 	clear()
 	
-	if(frameRate() < 1000 && frameRate() > 0) {
-		speedParse()
-	}
-	
 	var countA = 0
 	
-	for(var i = 1; i <= speedA; i++) {
-		countA++
-		if(countA > 1000) {
-			console.log(speedA)
-			break;
-		}
+	if(learn === true) {
 		netFunction()
 	}
 	
@@ -146,6 +141,27 @@ function draw() { //P5js loops this function 60 times per second (as defined by 
 	}
 	
 	document.getElementById('turboMultiplier').innerHTML = 'x' + document.getElementById('turboSlider').value
+	
+	benchLast = benchThis
+	benchThis = new Date()
+	benchDiff = benchThis - benchLast
+	if(turbo === true) {
+		if(benchDiff > 16) {
+			turboBuffer--
+		} else {
+			turboBuffer++
+		}
+		sliderTemp = document.getElementById('turboSlider').value
+		if(turboBuffer > 10) {
+			sliderTemp++
+			console.log(turboBuffer)
+			turboBuffer = 0
+		} else if(turboBuffer < -10) {
+			sliderTemp--
+			turboBuffer = 0
+		}
+		document.getElementById('turboSlider').value = sliderTemp
+	}
 }
 
 function netTemp(x) {
@@ -328,11 +344,6 @@ function windowResized() { //Resizes Canvas upon change in window size
 	graphCanvas.height = document.getElementById('errorCount').clientHeight
 }
 
-function speedParse() { //Manages the learn Rate of active Network
-	speedA = learnRate/Math.round(frameRate()) + speedOflo
-	speedOflo = speedA - Math.floor(speedA)
-}
-
 function netFunction() { //Manages the function of the active Network
 	
 	input = NaN
@@ -362,36 +373,24 @@ function turboToggle() { //Manages TurboMode, attached to 'Turbo' Button
 		turbo = false
 		document.getElementById('turboToggle').parentElement.style.backgroundColor = ''
 		
-		learnRate = 60
-		
 		render = 1
 	} else {
 		turbo = true
 		document.getElementById('turboToggle').parentElement.style.backgroundColor = '#7bd'
-		
+		turboBuffer = 0
 		render = 0
-		console.log("Turbo Mode Engaged!")
-		
-		learnRate = 60
-		
-		if(document.getElementById('stopToggle').innerHTML === 'Go') {
-			document.getElementById('stopToggle').innerHTML = 'Stop'
-		}
+
 		turboLoop()
 	}
 }
 
 function stop() { //Halts and Resumed the networks progress
 	
-	if(turbo === true) {
-		turboToggle()
-	}
-	
 	if(document.getElementById('stopToggle').innerHTML === 'Stop') {
-		learnRate = 0
+		learn = false
 		document.getElementById('stopToggle').innerHTML = 'Go'
 	} else {
-		learnRate = 60
+		learn = true
 		document.getElementById('stopToggle').innerHTML = 'Stop'
 	}
 }
