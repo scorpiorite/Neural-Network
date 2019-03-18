@@ -146,18 +146,19 @@ function draw() { //P5js loops this function 60 times per second (as defined by 
 	benchThis = new Date()
 	benchDiff = benchThis - benchLast
 	if(turbo === true) {
-		if(benchDiff > 16) {
+		if(benchDiff > 16) { //Maybe turboBuffer *= 1.1??
 			turboBuffer--
 		} else {
 			turboBuffer++
 		}
 		sliderTemp = document.getElementById('turboSlider').value
-		if(turboBuffer > 10) {
+		if(turboBuffer > 5) {
 			sliderTemp++
-			console.log(turboBuffer)
+			console.log(turboBuffer, benchDiff)
 			turboBuffer = 0
-		} else if(turboBuffer < -10) {
+		} else if(turboBuffer < -5) {
 			sliderTemp--
+			console.log(turboBuffer, benchDiff)
 			turboBuffer = 0
 		}
 		document.getElementById('turboSlider').value = sliderTemp
