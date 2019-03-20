@@ -134,7 +134,7 @@ div {
 	-webkit-appearance: none;  /* Override default CSS styles */
 	appearance: none;
 	width: 100%; /* Full-width */
-	height: 100%; /* Specified height */
+	height: 25%; /* Specified height */
 	background: #d3d3d3; /* Grey background */
 	outline: none; /* Remove outline */
 	opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */

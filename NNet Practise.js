@@ -95,7 +95,7 @@ function draw() { //P5js loops this function 60 times per second (as defined by 
 	}
 	
 	if(render === 1) {
-		//drawNet(networks[selectedNet])
+		drawNet(networks[selectedNet])
 	}
 	
 	for(var i = 0; i < networks[selectedNet].layers[networks[selectedNet].layers.length-1].length; i++) {
@@ -140,29 +140,7 @@ function draw() { //P5js loops this function 60 times per second (as defined by 
 		}
 	}
 	
-	document.getElementById('turboMultiplier').innerHTML = 'x' + document.getElementById('turboSlider').value
-	
-	benchLast = benchThis
-	benchThis = new Date()
-	benchDiff = benchThis - benchLast
-	if(turbo === true) {
-		if(benchDiff > 16) { //Maybe turboBuffer *= 1.1??
-			turboBuffer--
-		} else {
-			turboBuffer++
-		}
-		sliderTemp = document.getElementById('turboSlider').value
-		if(turboBuffer > 5) {
-			sliderTemp++
-			console.log(turboBuffer, benchDiff)
-			turboBuffer = 0
-		} else if(turboBuffer < -5) {
-			sliderTemp--
-			console.log(turboBuffer, benchDiff)
-			turboBuffer = 0
-		}
-		document.getElementById('turboSlider').value = sliderTemp
-	}
+	turboAdjust()
 }
 
 function netTemp(x) {
@@ -360,12 +338,29 @@ function netFunction() { //Manages the function of the active Network
 	}
 }
 
-function turboLoop() {
-	// Nothing right now
-	// if(turbo === true) {
-		// window.requestAnimationFrame(window.setTimeout(turboLoop(),1000))
-		// netFunction()
-	// }
+function turboAdjust() { //Adjusts the Turbo slider according to becnhmarked performance per frame
+	
+	benchLast = benchThis
+	benchThis = new Date()
+	benchDiff = benchThis - benchLast
+	if(turbo === true && learn === true) {
+		if(benchDiff > 17) { //Maybe turboBuffer *= 1.1?? - Needs negative management
+			turboBuffer--
+		} else {
+			turboBuffer++
+		}
+		sliderTemp = document.getElementById('turboSlider').value
+		if(turboBuffer > 5) {
+			sliderTemp++
+			turboBuffer = 0
+		} else if(turboBuffer < -5) {
+			sliderTemp--
+			turboBuffer = 0
+		}
+		document.getElementById('turboSlider').value = sliderTemp
+	}
+	
+	document.getElementById('turboMultiplier').innerHTML = 'x' + document.getElementById('turboSlider').value
 }
 
 function turboToggle() { //Manages TurboMode, attached to 'Turbo' Button
@@ -617,116 +612,148 @@ function MNISTParse(number) { //Generates some of the required Input data for MN
 }
 
 function drawNet(net) { //Renders the active Network with the help of P5js
-						//Neuron Position data does not exist with new model -> must be updated
-						//Perhaps redesign entire rednering engine
-
-	var cols = net.layers.length
-	var colWidth = width/cols
-	var rows = 0
-	var rowHeight = 0
-	var xArray = []
-	var yArray = []
-	nodeRadius = height/45
 	
-	if(mouseIsPressed && scrollBar.clicked === true && scrollBar.pos >= 0 && scrollBar.pos <= height-scrollBar.length) {
-		scrollBar.pos = mouseY - scrollBar.clickPos
-		net.layers[0].displayOffset = -(scrollBar.pos/(height-scrollBar.length))*(net.layers[0].length*nodeRadius*3 - height)
-	} else if(mouseIsPressed && scrollBar.clicked === true && scrollBar.pos < 0) {
-		scrollBar.clicked = false
-		scrollBar.pos = 0
-		net.layers[0].displayOffset = -(scrollBar.pos/(height-scrollBar.length))*(net.layers[0].length*nodeRadius*3 - height)
-	} else if(mouseIsPressed && scrollBar.clicked === true && scrollBar.pos > height-scrollBar.length) {
-		scrollBar.clicked = false
-		scrollBar.pos = height - scrollBar.length
-		net.layers[0].displayOffset = -(scrollBar.pos/(height-scrollBar.length))*(net.layers[0].length*nodeRadius*3 - height)
+	// p5js Canvas only draws weights, not Neurons!!
+	
+	// Needs to avoid rendering elements that are off canvas to save processing
+	// Needs to scale and scroll both horizontally and vertically
+	
+	var cols = new Array(net.layers.length) // cols[Neurons in layer i, heightDiv for this layer, Scroll value for this layer]
+	for(var i = 0; i < cols.length; i++) {
+		cols[i] = [net.layers[i].length,0]
 	}
 	
-	scrollBar.pos = (-net.layers[0].displayOffset/(net.layers[0].length*nodeRadius*3 - height))*(height-scrollBar.length)
-	stroke(119,187,221)
-	fill(119,187,221)
-	rect(0,scrollBar.pos,scrollBar.width,scrollBar.length)
+	var widthDiv = canvasWidth/cols.length+1
+	var widthOff = widthDiv/2
+	var widthOffScroll = 0
+	var heightDiv = nodeRadius*3
+	var heightOff = heightDiv/2
 	
-	for(var i = 0; i < net.layers.length; i++) {
-		if(height < net.layers[i].length*3*nodeRadius) {
-			for(var j = 0; j < net.layers[i].length; j++) {
-				net.layers[i][j].pos.x = colWidth*i + colWidth/2
-				net.layers[i][j].pos.y = nodeRadius*3*j + nodeRadius*3/2 + net.layers[i].displayOffset
-			}
-		} else {
-			for(var j = 0; j < net.layers[i].length; j++) {
-				net.layers[i][j].pos.x = colWidth*i + colWidth/2
-				net.layers[i][j].pos.y = (height/net.layers[i].length)*j + (height/net.layers[i].length)/2
-			}
-		}
-		if(net.layers[i].length > height/nodeRadius/3 && i > 0) {
-			for(var j = - Math.ceil(net.layers[i].displayOffset/nodeRadius/3); j < height/nodeRadius/3 - net.layers[i].displayOffset/nodeRadius/3; j++) {
-				if(net.layers[i-1].length > height/nodeRadius/3 && j < net.layers[i].length && j >= 0) {
-					for(var n = - Math.ceil(net.layers[i-1].displayOffset/nodeRadius/3); n < height/nodeRadius/3 - net.layers[i-1].displayOffset/nodeRadius/3; n++) {
-						if(n < net.layers[i-1].length && n >= 0) {
-							if(net.layers[i][j].selectedIndex == n) {
-								stroke(255,0,0)
-							} else if(net.layers[i][j].weight[n] > 0) {
-								stroke(255-(net.activate(net.layers[i][j].weight[n])-0.5)*2*255,255,255)
-							} else {
-								stroke(net.activate(net.layers[i][j].weight[n])*2*255,net.activate(net.layers[i][j].weight[n])*2*255,255)
-							}
-							line(net.layers[i][j].pos.x-nodeRadius,net.layers[i][j].pos.y,net.layers[i-1][n].pos.x+nodeRadius,net.layers[i-1][n].pos.y)
-						}
-					}
-				} else if(j < net.layers[i].length && j >= 0) {
-					for(var n = 0; n < net.layers[i-1].length; n++) {
-						if(n < net.layers[i-1].length) {
-							if(net.layers[i][j].selectedIndex == n) {
-								stroke(255,0,0)
-							} else if(net.layers[i][j].weight[n] > 0) {
-								stroke(255-(net.activate(net.layers[i][j].weight[n])-0.5)*2*255,255,255)
-							} else {
-								stroke(net.activate(net.layers[i][j].weight[n])*2*255,net.activate(net.layers[i][j].weight[n])*2*255,255)
-							}
-							line(net.layers[i][j].pos.x-nodeRadius,net.layers[i][j].pos.y,net.layers[i-1][n].pos.x+nodeRadius,net.layers[i-1][n].pos.y)
-						}
-					}
-				}
-			}
-		} else if(i > 0) {
-			for(var j = 0; j < net.layers[i].length; j++) {
-				if(net.layers[i-1].length > height/nodeRadius/3) {
-					for(var n = - Math.ceil(net.layers[i-1].displayOffset/nodeRadius/3); n < height/nodeRadius/3 - net.layers[i-1].displayOffset/nodeRadius/3; n++) {
-						if(n < net.layers[i-1].length && n >= 0) {
-							if(net.layers[i][j].selectedIndex == n) {
-								stroke(255,0,0)
-							} else if(net.layers[i][j].weight[n] > 0) {
-								stroke(255-(net.activate(net.layers[i][j].weight[n])-0.5)*2*255,255,255)
-							} else {
-								stroke(net.activate(net.layers[i][j].weight[n])*2*255,net.activate(net.layers[i][j].weight[n])*2*255,255)
-							}
-							line(net.layers[i][j].pos.x-nodeRadius,net.layers[i][j].pos.y,net.layers[i-1][n].pos.x+nodeRadius,net.layers[i-1][n].pos.y)
-						}
-					}
-				} else {
-					for(var n = 0; n < net.layers[i-1].length; n++) {
-						if(n < net.layers[i-1].length) {
-							if(net.layers[i][j].selectedIndex == n) {
-								stroke(255,0,0)
-							} else if(net.layers[i][j].weight[n] > 0) {
-								stroke(255-(net.activate(net.layers[i][j].weight[n])-0.5)*2*255,255,255)
-							} else {
-								stroke(net.activate(net.layers[i][j].weight[n])*2*255,net.activate(net.layers[i][j].weight[n])*2*255,255)
-							}
-							line(net.layers[i][j].pos.x-nodeRadius,net.layers[i][j].pos.y,net.layers[i-1][n].pos.x+nodeRadius,net.layers[i-1][n].pos.y)
-						}
-					}
-				}
+	for(var i = 1; i < cols.length; i++) {
+		for(var j = 0; j < cols[i][0]; j++) {
+			for(var n = 0; n < cols[i-1][0]; n++) {
+				//line(x1,y1,x2,y2)
+				stroke(0)
+				line(i*widthDiv + widthOff + widthOffScroll - nodeRadius,j*heightDiv + heightOff + cols[i][1],(i-1)*widthDiv + widthOff + widthOffScroll + nodeRadius,n*heightDiv + heightOff + cols[i-1][1])
 			}
 		}
 	}
 	
-	for(var i = 0; i < cols; i++) {
-		rows = net.layers[i].length
-		for(var j = 0; j < net.layers[i].length; j++) {
-			drawNode(net.layers[i][j].pos.x,net.layers[i][j].pos.y,net.layers[i][j].activation.toFixed(2),net.layers[i][j].selected)
+	for(var i = 0; i < cols.length; i++) {
+		for(var j = 0; j < cols[i][0]; j++) {
+			drawNode(i*widthDiv + widthOff + widthOffScroll,j*heightDiv + heightOff + cols[i][1],'A',false)
 		}
 	}
+	
+	//	----  GARBAGE  ----
+	
+	// var cols = net.layers.length
+	// var colWidth = width/cols
+	// var rows = 0
+	// var rowHeight = 0
+	// var xArray = []
+	// var yArray = []
+	// nodeRadius = height/45
+	
+	// if(mouseIsPressed && scrollBar.clicked === true && scrollBar.pos >= 0 && scrollBar.pos <= height-scrollBar.length) {
+		// scrollBar.pos = mouseY - scrollBar.clickPos
+		// net.layers[0].displayOffset = -(scrollBar.pos/(height-scrollBar.length))*(net.layers[0].length*nodeRadius*3 - height)
+	// } else if(mouseIsPressed && scrollBar.clicked === true && scrollBar.pos < 0) {
+		// scrollBar.clicked = false
+		// scrollBar.pos = 0
+		// net.layers[0].displayOffset = -(scrollBar.pos/(height-scrollBar.length))*(net.layers[0].length*nodeRadius*3 - height)
+	// } else if(mouseIsPressed && scrollBar.clicked === true && scrollBar.pos > height-scrollBar.length) {
+		// scrollBar.clicked = false
+		// scrollBar.pos = height - scrollBar.length
+		// net.layers[0].displayOffset = -(scrollBar.pos/(height-scrollBar.length))*(net.layers[0].length*nodeRadius*3 - height)
+	// }
+	
+	// scrollBar.pos = (-net.layers[0].displayOffset/(net.layers[0].length*nodeRadius*3 - height))*(height-scrollBar.length)
+	// stroke(119,187,221)
+	// fill(119,187,221)
+	// rect(0,scrollBar.pos,scrollBar.width,scrollBar.length)
+	
+	// for(var i = 0; i < net.layers.length; i++) {
+		// if(height < net.layers[i].length*3*nodeRadius) {
+			// for(var j = 0; j < net.layers[i].length; j++) {
+				// net.layers[i][j].pos.x = colWidth*i + colWidth/2
+				// net.layers[i][j].pos.y = nodeRadius*3*j + nodeRadius*3/2 + net.layers[i].displayOffset
+			// }
+		// } else {
+			// for(var j = 0; j < net.layers[i].length; j++) {
+				// net.layers[i][j].pos.x = colWidth*i + colWidth/2
+				// net.layers[i][j].pos.y = (height/net.layers[i].length)*j + (height/net.layers[i].length)/2
+			// }
+		// }
+		// if(net.layers[i].length > height/nodeRadius/3 && i > 0) {
+			// for(var j = - Math.ceil(net.layers[i].displayOffset/nodeRadius/3); j < height/nodeRadius/3 - net.layers[i].displayOffset/nodeRadius/3; j++) {
+				// if(net.layers[i-1].length > height/nodeRadius/3 && j < net.layers[i].length && j >= 0) {
+					// for(var n = - Math.ceil(net.layers[i-1].displayOffset/nodeRadius/3); n < height/nodeRadius/3 - net.layers[i-1].displayOffset/nodeRadius/3; n++) {
+						// if(n < net.layers[i-1].length && n >= 0) {
+							// if(net.layers[i][j].selectedIndex == n) {
+								// stroke(255,0,0)
+							// } else if(net.layers[i][j].weight[n] > 0) {
+								// stroke(255-(net.activate(net.layers[i][j].weight[n])-0.5)*2*255,255,255)
+							// } else {
+								// stroke(net.activate(net.layers[i][j].weight[n])*2*255,net.activate(net.layers[i][j].weight[n])*2*255,255)
+							// }
+							// line(net.layers[i][j].pos.x-nodeRadius,net.layers[i][j].pos.y,net.layers[i-1][n].pos.x+nodeRadius,net.layers[i-1][n].pos.y)
+						// }
+					// }
+				// } else if(j < net.layers[i].length && j >= 0) {
+					// for(var n = 0; n < net.layers[i-1].length; n++) {
+						// if(n < net.layers[i-1].length) {
+							// if(net.layers[i][j].selectedIndex == n) {
+								// stroke(255,0,0)
+							// } else if(net.layers[i][j].weight[n] > 0) {
+								// stroke(255-(net.activate(net.layers[i][j].weight[n])-0.5)*2*255,255,255)
+							// } else {
+								// stroke(net.activate(net.layers[i][j].weight[n])*2*255,net.activate(net.layers[i][j].weight[n])*2*255,255)
+							// }
+							// line(net.layers[i][j].pos.x-nodeRadius,net.layers[i][j].pos.y,net.layers[i-1][n].pos.x+nodeRadius,net.layers[i-1][n].pos.y)
+						// }
+					// }
+				// }
+			// }
+		// } else if(i > 0) {
+			// for(var j = 0; j < net.layers[i].length; j++) {
+				// if(net.layers[i-1].length > height/nodeRadius/3) {
+					// for(var n = - Math.ceil(net.layers[i-1].displayOffset/nodeRadius/3); n < height/nodeRadius/3 - net.layers[i-1].displayOffset/nodeRadius/3; n++) {
+						// if(n < net.layers[i-1].length && n >= 0) {
+							// if(net.layers[i][j].selectedIndex == n) {
+								// stroke(255,0,0)
+							// } else if(net.layers[i][j].weight[n] > 0) {
+								// stroke(255-(net.activate(net.layers[i][j].weight[n])-0.5)*2*255,255,255)
+							// } else {
+								// stroke(net.activate(net.layers[i][j].weight[n])*2*255,net.activate(net.layers[i][j].weight[n])*2*255,255)
+							// }
+							// line(net.layers[i][j].pos.x-nodeRadius,net.layers[i][j].pos.y,net.layers[i-1][n].pos.x+nodeRadius,net.layers[i-1][n].pos.y)
+						// }
+					// }
+				// } else {
+					// for(var n = 0; n < net.layers[i-1].length; n++) {
+						// if(n < net.layers[i-1].length) {
+							// if(net.layers[i][j].selectedIndex == n) {
+								// stroke(255,0,0)
+							// } else if(net.layers[i][j].weight[n] > 0) {
+								// stroke(255-(net.activate(net.layers[i][j].weight[n])-0.5)*2*255,255,255)
+							// } else {
+								// stroke(net.activate(net.layers[i][j].weight[n])*2*255,net.activate(net.layers[i][j].weight[n])*2*255,255)
+							// }
+							// line(net.layers[i][j].pos.x-nodeRadius,net.layers[i][j].pos.y,net.layers[i-1][n].pos.x+nodeRadius,net.layers[i-1][n].pos.y)
+						// }
+					// }
+				// }
+			// }
+		// }
+	// }
+	
+	// for(var i = 0; i < cols; i++) {
+		// rows = net.layers[i].length
+		// for(var j = 0; j < net.layers[i].length; j++) {
+			// drawNode(net.layers[i][j].pos.x,net.layers[i][j].pos.y,net.layers[i][j].activation.toFixed(2),net.layers[i][j].selected)
+		// }
+	// }
 }
 
 function drawNode(x,y,content,selected) { //Renders Neurons on the canvas (part of 'drawNet')
