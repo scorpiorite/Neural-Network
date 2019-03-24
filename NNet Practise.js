@@ -628,24 +628,25 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 		if(net.layers[i].length*heightDiv < canvasHeight) {
 			cols[i] = [net.layers[i].length,canvasHeight/net.layers[i].length,null,net.layers[i].length,0]
 		} else {
-			cols[i] = [net.layers[i].length,heightDiv,-300,canvasHeight/heightDiv,0]
+			cols[i] = [net.layers[i].length,heightDiv,-100,canvasHeight/heightDiv,0]
 		}
 	}
 	
-	//line(widthDiv/4,heightDiv,widthDiv/4,heightDiv*2)
+	line(widthDiv/4,heightDiv,widthDiv/4,heightDiv*2)
+	line(widthDiv/4 + 20,60,widthDiv/4 + 20,120)
 	
 	for(var i = 0; i < cols.length; i++) {
 		if(cols[i][0]*heightDiv > canvasHeight) {
-			
+			cols[i][4] = Math.floor(-cols[i][2]/cols[i][1])
 		}
 	}
 	
 	for(var i = 1; i < cols.length; i++) {
 		var widthOff = i*widthDiv + widthDiv/2
 		var widthOff_PrevInd = (i-1)*widthDiv + widthDiv/2
-		for(var j = 0; j < cols[i][3]; j++) {
+		for(var j = cols[i][4]; j < cols[i][4] + cols[i][3]; j++) {
 			var heightOff = j*cols[i][1] + cols[i][1]/2
-			for(var n = 0; n < cols[i-1][3]; n++) {
+			for(var n = cols[i-1][4]; n < cols[i-1][4] + cols[i-1][3]; n++) {
 				stroke(0) //							   |					   |											   |
 				line(widthOff + widthOffScroll - nodeRadius, heightOff + cols[i][2], widthOff_PrevInd + widthOffScroll + nodeRadius, n*cols[i-1][1] + cols[i-1][1]/2 + cols[i-1][2])
 			}
