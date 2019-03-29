@@ -161,6 +161,12 @@ function network_matrix(id, detailsArray) {
 	this.LR = 0.1
 	this.lastCorrects = []
 	this.layers = [] // this.layers[layer][neuron][[value, activation, activation_d, error],[bias, weight, weight , weight,...],[bias_D, weight_D, weight_D, weight_D,...]]
+	this.canvasData = new Array(detailsArray.length) // cols[Neurons in layer i, heightDiv for this layer, Scroll value for this layer, number of Neurons displayable, First displayable Neuron]
+	
+	for(var i = 0; i < this.canvasData.length; i++) {
+		this.canvasData[i] = new Array(5)
+		this.canvasData[i][2] = 0
+	}
 	
 	for(var i = 0; i < detailsArray.length; i++) { //	Build data structure
 		this.layers.push(new Array(detailsArray[i]))

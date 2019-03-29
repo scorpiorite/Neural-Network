@@ -33,6 +33,8 @@ var benchThis = 0
 var benchLast = 0
 var benchDiff = 0
 
+var scrollArr = []
+
 function setup() { //P5js calls this function on start-up
 	
 	// canvasHeight = windowHeight
@@ -79,6 +81,11 @@ function setup() { //P5js calls this function on start-up
 	//networks.push(parseNetwork(testNetString))
 	networks.push(new network_matrix("test_matrix",[784,18,18,10]))
 	
+	scrollArr = new Array(networks[0].layers.length)
+	for(var i = 0; i < scrollArr.length; i++) {
+		scrollArr[i] = 0
+	}
+	
 	loadNets()
 	
 	stop()
@@ -95,7 +102,7 @@ function draw() { //P5js loops this function 60 times per second (as defined by 
 	}
 	
 	if(render === 1) {
-		drawNet(networks[selectedNet])
+		drawNet(networks[selectedNet],scrollArr)
 	}
 	
 	for(var i = 0; i < networks[selectedNet].layers[networks[selectedNet].layers.length-1].length; i++) {
@@ -535,17 +542,25 @@ function mouseReleased() { //Fixes some issues with incorrect canvas scrolling o
 }
 
 function canvasScroll(event) { //Event listener for canvas scrolling
-	for(var i = 0; i < networks[selectedNet].layer.length; i++) {
-		if(mouseX > networks[selectedNet].layer[i].neuron[0].pos.x - nodeRadius*2 && mouseX < networks[selectedNet].layer[i].neuron[0].pos.x + nodeRadius*2) {
-			if(event.deltaY > 0 && networks[selectedNet].layer[i].displayOffset < 0) {
-				networks[selectedNet].layer[i].displayOffset += 10
-			} 
-			if(event.deltaY < 0 && networks[selectedNet].layer[i].displayOffset > height - networks[selectedNet].layer[i].neuron.length*3*nodeRadius) {
-				networks[selectedNet].layer[i].displayOffset -= 10
-			}
-			// networks[selectedNet].layer[i].displayOffset += event.deltaY
-		}
+	
+	for(var i = 0; i < networks[selectedNet].layers.length; i++) {
+		
 	}
+	
+	
+	
+	
+	// for(var i = 0; i < networks[selectedNet].layer.length; i++) {
+		// if(mouseX > networks[selectedNet].layer[i].neuron[0].pos.x - nodeRadius*2 && mouseX < networks[selectedNet].layer[i].neuron[0].pos.x + nodeRadius*2) {
+			// if(event.deltaY > 0 && networks[selectedNet].layer[i].displayOffset < 0) {
+				// networks[selectedNet].layer[i].displayOffset += 10
+			// } 
+			// if(event.deltaY < 0 && networks[selectedNet].layer[i].displayOffset > height - networks[selectedNet].layer[i].neuron.length*3*nodeRadius) {
+				// networks[selectedNet].layer[i].displayOffset -= 10
+			// }
+			networks[selectedNet].layer[i].displayOffset += event.deltaY
+		// }
+	// }
 }
 
 function networkSelect(input) { //Manages selected network in the 'Networks' drop box
@@ -623,151 +638,49 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 	var heightDiv = nodeRadius*3
 	var heightDiv_half = heightDiv/2
 	
-	var cols = new Array(net.layers.length) // cols[Neurons in layer i, heightDiv for this layer, Scroll value for this layer, number of Neurons displayable, First displayable Neuron]
-	for(var i = 0; i < cols.length; i++) {
+	// cols[Neurons in layer i, heightDiv for this layer, Scroll value for this layer, number of Neurons displayable, First displayable Neuron]
+	for(var i = 0; i < net.canvasData.length; i++) {
 		if(net.layers[i].length*heightDiv < canvasHeight) {
-			cols[i] = [net.layers[i].length,canvasHeight/net.layers[i].length,null,net.layers[i].length,0]
+		  //net.canvasData[i] = [net.layers[i].length,canvasHeight/net.layers[i].length,null,net.layers[i].length,0]
+			net.canvasData[i][0] = net.layers[i].length
+			net.canvasData[i][1] = canvasHeight/net.layers[i].length
+			net.canvasData[i][3] = net.layers[i].length
+			net.canvasData[i][4] = 0
 		} else {
-			cols[i] = [net.layers[i].length,heightDiv,-100,canvasHeight/heightDiv,0]
+		  //net.canvasData[i] = [net.layers[i].length,heightDiv,scrollArr[i],canvasHeight/heightDiv,0]
+			net.canvasData[i][0] = net.layers[i].length
+			net.canvasData[i][1] = heightDiv
+			net.canvasData[i][3] = canvasHeight/heightDiv
+			net.canvasData[i][4] = 0
 		}
 	}
 	
 	line(widthDiv/4,heightDiv,widthDiv/4,heightDiv*2)
 	line(widthDiv/4 + 20,60,widthDiv/4 + 20,120)
 	
-	for(var i = 0; i < cols.length; i++) {
-		if(cols[i][0]*heightDiv > canvasHeight) {
-			cols[i][4] = Math.floor(-cols[i][2]/cols[i][1])
+	for(var i = 0; i < net.canvasData.length; i++) {
+		if(net.canvasData[i][0]*heightDiv > canvasHeight) {
+			net.canvasData[i][4] = Math.floor(-net.canvasData[i][2]/net.canvasData[i][1])
 		}
 	}
 	
-	for(var i = 1; i < cols.length; i++) {
+	for(var i = 1; i < net.canvasData.length; i++) {
 		var widthOff = i*widthDiv + widthDiv/2
 		var widthOff_PrevInd = (i-1)*widthDiv + widthDiv/2
-		for(var j = cols[i][4]; j < cols[i][4] + cols[i][3]; j++) {
-			var heightOff = j*cols[i][1] + cols[i][1]/2
-			for(var n = cols[i-1][4]; n < cols[i-1][4] + cols[i-1][3]; n++) {
+		for(var j = net.canvasData[i][4]; j < net.canvasData[i][4] + net.canvasData[i][3]; j++) {
+			var heightOff = j*net.canvasData[i][1] + net.canvasData[i][1]/2
+			for(var n = net.canvasData[i-1][4]; n < net.canvasData[i-1][4] + net.canvasData[i-1][3]; n++) {
 				stroke(0) //							   |					   |											   |
-				line(widthOff + widthOffScroll - nodeRadius, heightOff + cols[i][2], widthOff_PrevInd + widthOffScroll + nodeRadius, n*cols[i-1][1] + cols[i-1][1]/2 + cols[i-1][2])
+				line(widthOff + widthOffScroll - nodeRadius, heightOff + net.canvasData[i][2], widthOff_PrevInd + widthOffScroll + nodeRadius, n*net.canvasData[i-1][1] + net.canvasData[i-1][1]/2 + net.canvasData[i-1][2])
 			}
 		}
 	}
 	
-	for(var i = 0; i < cols.length; i++) {
-		for(var j = 0; j < cols[i][0]; j++) {
-			//drawNode(i*widthDiv + widthOff + widthOffScroll,j*heightDiv + heightOff + cols[i][1],'A',false)
+	for(var i = 0; i < net.canvasData.length; i++) {
+		for(var j = 0; j < net.canvasData[i][0]; j++) {
+			//drawNode(i*widthDiv + widthOff + widthOffScroll,j*heightDiv + heightOff + net.canvasData[i][1],'A',false)
 		}
 	}
-	
-	//	----  GARBAGE  ----
-	
-	// var cols = net.layers.length
-	// var colWidth = width/cols
-	// var rows = 0
-	// var rowHeight = 0
-	// var xArray = []
-	// var yArray = []
-	// nodeRadius = height/45
-	
-	// if(mouseIsPressed && scrollBar.clicked === true && scrollBar.pos >= 0 && scrollBar.pos <= height-scrollBar.length) {
-		// scrollBar.pos = mouseY - scrollBar.clickPos
-		// net.layers[0].displayOffset = -(scrollBar.pos/(height-scrollBar.length))*(net.layers[0].length*nodeRadius*3 - height)
-	// } else if(mouseIsPressed && scrollBar.clicked === true && scrollBar.pos < 0) {
-		// scrollBar.clicked = false
-		// scrollBar.pos = 0
-		// net.layers[0].displayOffset = -(scrollBar.pos/(height-scrollBar.length))*(net.layers[0].length*nodeRadius*3 - height)
-	// } else if(mouseIsPressed && scrollBar.clicked === true && scrollBar.pos > height-scrollBar.length) {
-		// scrollBar.clicked = false
-		// scrollBar.pos = height - scrollBar.length
-		// net.layers[0].displayOffset = -(scrollBar.pos/(height-scrollBar.length))*(net.layers[0].length*nodeRadius*3 - height)
-	// }
-	
-	// scrollBar.pos = (-net.layers[0].displayOffset/(net.layers[0].length*nodeRadius*3 - height))*(height-scrollBar.length)
-	// stroke(119,187,221)
-	// fill(119,187,221)
-	// rect(0,scrollBar.pos,scrollBar.width,scrollBar.length)
-	
-	// for(var i = 0; i < net.layers.length; i++) {
-		// if(height < net.layers[i].length*3*nodeRadius) {
-			// for(var j = 0; j < net.layers[i].length; j++) {
-				// net.layers[i][j].pos.x = colWidth*i + colWidth/2
-				// net.layers[i][j].pos.y = nodeRadius*3*j + nodeRadius*3/2 + net.layers[i].displayOffset
-			// }
-		// } else {
-			// for(var j = 0; j < net.layers[i].length; j++) {
-				// net.layers[i][j].pos.x = colWidth*i + colWidth/2
-				// net.layers[i][j].pos.y = (height/net.layers[i].length)*j + (height/net.layers[i].length)/2
-			// }
-		// }
-		// if(net.layers[i].length > height/nodeRadius/3 && i > 0) {
-			// for(var j = - Math.ceil(net.layers[i].displayOffset/nodeRadius/3); j < height/nodeRadius/3 - net.layers[i].displayOffset/nodeRadius/3; j++) {
-				// if(net.layers[i-1].length > height/nodeRadius/3 && j < net.layers[i].length && j >= 0) {
-					// for(var n = - Math.ceil(net.layers[i-1].displayOffset/nodeRadius/3); n < height/nodeRadius/3 - net.layers[i-1].displayOffset/nodeRadius/3; n++) {
-						// if(n < net.layers[i-1].length && n >= 0) {
-							// if(net.layers[i][j].selectedIndex == n) {
-								// stroke(255,0,0)
-							// } else if(net.layers[i][j].weight[n] > 0) {
-								// stroke(255-(net.activate(net.layers[i][j].weight[n])-0.5)*2*255,255,255)
-							// } else {
-								// stroke(net.activate(net.layers[i][j].weight[n])*2*255,net.activate(net.layers[i][j].weight[n])*2*255,255)
-							// }
-							// line(net.layers[i][j].pos.x-nodeRadius,net.layers[i][j].pos.y,net.layers[i-1][n].pos.x+nodeRadius,net.layers[i-1][n].pos.y)
-						// }
-					// }
-				// } else if(j < net.layers[i].length && j >= 0) {
-					// for(var n = 0; n < net.layers[i-1].length; n++) {
-						// if(n < net.layers[i-1].length) {
-							// if(net.layers[i][j].selectedIndex == n) {
-								// stroke(255,0,0)
-							// } else if(net.layers[i][j].weight[n] > 0) {
-								// stroke(255-(net.activate(net.layers[i][j].weight[n])-0.5)*2*255,255,255)
-							// } else {
-								// stroke(net.activate(net.layers[i][j].weight[n])*2*255,net.activate(net.layers[i][j].weight[n])*2*255,255)
-							// }
-							// line(net.layers[i][j].pos.x-nodeRadius,net.layers[i][j].pos.y,net.layers[i-1][n].pos.x+nodeRadius,net.layers[i-1][n].pos.y)
-						// }
-					// }
-				// }
-			// }
-		// } else if(i > 0) {
-			// for(var j = 0; j < net.layers[i].length; j++) {
-				// if(net.layers[i-1].length > height/nodeRadius/3) {
-					// for(var n = - Math.ceil(net.layers[i-1].displayOffset/nodeRadius/3); n < height/nodeRadius/3 - net.layers[i-1].displayOffset/nodeRadius/3; n++) {
-						// if(n < net.layers[i-1].length && n >= 0) {
-							// if(net.layers[i][j].selectedIndex == n) {
-								// stroke(255,0,0)
-							// } else if(net.layers[i][j].weight[n] > 0) {
-								// stroke(255-(net.activate(net.layers[i][j].weight[n])-0.5)*2*255,255,255)
-							// } else {
-								// stroke(net.activate(net.layers[i][j].weight[n])*2*255,net.activate(net.layers[i][j].weight[n])*2*255,255)
-							// }
-							// line(net.layers[i][j].pos.x-nodeRadius,net.layers[i][j].pos.y,net.layers[i-1][n].pos.x+nodeRadius,net.layers[i-1][n].pos.y)
-						// }
-					// }
-				// } else {
-					// for(var n = 0; n < net.layers[i-1].length; n++) {
-						// if(n < net.layers[i-1].length) {
-							// if(net.layers[i][j].selectedIndex == n) {
-								// stroke(255,0,0)
-							// } else if(net.layers[i][j].weight[n] > 0) {
-								// stroke(255-(net.activate(net.layers[i][j].weight[n])-0.5)*2*255,255,255)
-							// } else {
-								// stroke(net.activate(net.layers[i][j].weight[n])*2*255,net.activate(net.layers[i][j].weight[n])*2*255,255)
-							// }
-							// line(net.layers[i][j].pos.x-nodeRadius,net.layers[i][j].pos.y,net.layers[i-1][n].pos.x+nodeRadius,net.layers[i-1][n].pos.y)
-						// }
-					// }
-				// }
-			// }
-		// }
-	// }
-	
-	// for(var i = 0; i < cols; i++) {
-		// rows = net.layers[i].length
-		// for(var j = 0; j < net.layers[i].length; j++) {
-			// drawNode(net.layers[i][j].pos.x,net.layers[i][j].pos.y,net.layers[i][j].activation.toFixed(2),net.layers[i][j].selected)
-		// }
-	// }
 }
 
 function drawNode(x,y,content,selected) { //Renders Neurons on the canvas (part of 'drawNet')
