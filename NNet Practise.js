@@ -639,46 +639,46 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 	var heightDiv_half = heightDiv/2
 	
 	// cols[Neurons in layer i, heightDiv for this layer, Scroll value for this layer, number of Neurons displayable, First displayable Neuron]
-	for(var i = 0; i < net.canvasData.length; i++) {
+	for(var i = 0; i < net.canvasData.layerData.length; i++) {
 		if(net.layers[i].length*heightDiv < canvasHeight) {
-		  //net.canvasData[i] = [net.layers[i].length,canvasHeight/net.layers[i].length,null,net.layers[i].length,0]
-			net.canvasData[i][0] = net.layers[i].length
-			net.canvasData[i][1] = canvasHeight/net.layers[i].length
-			net.canvasData[i][3] = net.layers[i].length
-			net.canvasData[i][4] = 0
+		  //net.canvasData.layerData[i] = [net.layers[i].length,canvasHeight/net.layers[i].length,null,net.layers[i].length,0]
+			net.canvasData.layerData[i][0] = net.layers[i].length
+			net.canvasData.layerData[i][1] = canvasHeight/net.layers[i].length
+			net.canvasData.layerData[i][3] = net.layers[i].length
+			net.canvasData.layerData[i][4] = 0
 		} else {
-		  //net.canvasData[i] = [net.layers[i].length,heightDiv,scrollArr[i],canvasHeight/heightDiv,0]
-			net.canvasData[i][0] = net.layers[i].length
-			net.canvasData[i][1] = heightDiv
-			net.canvasData[i][3] = canvasHeight/heightDiv
-			net.canvasData[i][4] = 0
+		  //net.canvasData.layerData[i] = [net.layers[i].length,heightDiv,scrollArr[i],canvasHeight/heightDiv,0]
+			net.canvasData.layerData[i][0] = net.layers[i].length
+			net.canvasData.layerData[i][1] = heightDiv
+			net.canvasData.layerData[i][3] = canvasHeight/heightDiv
+			net.canvasData.layerData[i][4] = 0
 		}
 	}
 	
 	line(widthDiv/4,heightDiv,widthDiv/4,heightDiv*2)
 	line(widthDiv/4 + 20,60,widthDiv/4 + 20,120)
 	
-	for(var i = 0; i < net.canvasData.length; i++) {
-		if(net.canvasData[i][0]*heightDiv > canvasHeight) {
-			net.canvasData[i][4] = Math.floor(-net.canvasData[i][2]/net.canvasData[i][1])
+	for(var i = 0; i < net.canvasData.layerData.length; i++) {
+		if(net.canvasData.layerData[i][0]*heightDiv > canvasHeight) {
+			net.canvasData.layerData[i][4] = Math.floor(-net.canvasData.layerData[i][2]/net.canvasData.layerData[i][1])
 		}
 	}
 	
-	for(var i = 1; i < net.canvasData.length; i++) {
+	for(var i = 1; i < net.canvasData.layerData.length; i++) {
 		var widthOff = i*widthDiv + widthDiv/2
 		var widthOff_PrevInd = (i-1)*widthDiv + widthDiv/2
-		for(var j = net.canvasData[i][4]; j < net.canvasData[i][4] + net.canvasData[i][3]; j++) {
-			var heightOff = j*net.canvasData[i][1] + net.canvasData[i][1]/2
-			for(var n = net.canvasData[i-1][4]; n < net.canvasData[i-1][4] + net.canvasData[i-1][3]; n++) {
-				stroke(0) //							   |					   |											   |
-				line(widthOff + widthOffScroll - nodeRadius, heightOff + net.canvasData[i][2], widthOff_PrevInd + widthOffScroll + nodeRadius, n*net.canvasData[i-1][1] + net.canvasData[i-1][1]/2 + net.canvasData[i-1][2])
+		for(var j = net.canvasData.layerData[i][4]; j < net.canvasData.layerData[i][4] + net.canvasData.layerData[i][3]; j++) {
+			var heightOff = j*net.canvasData.layerData[i][1] + net.canvasData.layerData[i][1]/2
+			for(var n = net.canvasData.layerData[i-1][4]; n < net.canvasData.layerData[i-1][4] + net.canvasData.layerData[i-1][3]; n++) {
+				stroke(0) //							   |					   					   |											   |
+				line(widthOff + widthOffScroll - nodeRadius, heightOff + net.canvasData.layerData[i][2], widthOff_PrevInd + widthOffScroll + nodeRadius, n*net.canvasData.layerData[i-1][1] + net.canvasData.layerData[i-1][1]/2 + net.canvasData.layerData[i-1][2])
 			}
 		}
 	}
 	
-	for(var i = 0; i < net.canvasData.length; i++) {
-		for(var j = 0; j < net.canvasData[i][0]; j++) {
-			//drawNode(i*widthDiv + widthOff + widthOffScroll,j*heightDiv + heightOff + net.canvasData[i][1],'A',false)
+	for(var i = 0; i < net.canvasData.layerData.length; i++) {
+		for(var j = 0; j < net.canvasData.layerData[i][0]; j++) {
+			//drawNode(i*widthDiv + widthOff + widthOffScroll,j*heightDiv + heightOff + net.canvasData.layerData[i][1],'A',false)
 		}
 	}
 }
