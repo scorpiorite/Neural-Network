@@ -544,9 +544,16 @@ function mouseReleased() { //Fixes some issues with incorrect canvas scrolling o
 function canvasScroll(event) { //Event listener for canvas scrolling
 	
 	for(var i = 0; i < networks[selectedNet].layers.length; i++) {
-		
+		if(mouseX > networks[selectedNet].canvasData.widthDiv/2 + networks[selectedNet].canvasData.widthDiv*i - nodeRadius && mouseX < networks[selectedNet].canvasData.widthDiv/2 + networks[selectedNet].canvasData.widthDiv*i + nodeRadius) {
+			if(event.deltaY > 0) {
+				networks[selectedNet].canvasData.layerData[i][2] += 5
+			} else if(event.deltaY < 0) {
+				networks[selectedNet].canvasData.layerData[i][2] -= 5
+			}
+		}
 	}
 	
+	//console.log(event,mouseX)
 	
 	
 	
@@ -558,7 +565,7 @@ function canvasScroll(event) { //Event listener for canvas scrolling
 			// if(event.deltaY < 0 && networks[selectedNet].layer[i].displayOffset > height - networks[selectedNet].layer[i].neuron.length*3*nodeRadius) {
 				// networks[selectedNet].layer[i].displayOffset -= 10
 			// }
-			networks[selectedNet].layer[i].displayOffset += event.deltaY
+			//networks[selectedNet].layer[i].displayOffset += event.deltaY
 		// }
 	// }
 }
@@ -634,20 +641,22 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 	// Needs to scale and scroll both horizontally and vertically
 	
 	var widthDiv = canvasWidth/net.layers.length+1
+	net.canvasData.widthDiv = canvasWidth/net.layers.length+1
 	var widthOffScroll = 0
+	net.canvasData.widthOffScroll = 0
 	var heightDiv = nodeRadius*3
+	net.canvasData.heightDiv = nodeRadius*3
 	var heightDiv_half = heightDiv/2
+	net.canvasData.heightDiv_half = heightDiv/2
 	
 	// cols[Neurons in layer i, heightDiv for this layer, Scroll value for this layer, number of Neurons displayable, First displayable Neuron]
 	for(var i = 0; i < net.canvasData.layerData.length; i++) {
 		if(net.layers[i].length*heightDiv < canvasHeight) {
-		  //net.canvasData.layerData[i] = [net.layers[i].length,canvasHeight/net.layers[i].length,null,net.layers[i].length,0]
 			net.canvasData.layerData[i][0] = net.layers[i].length
 			net.canvasData.layerData[i][1] = canvasHeight/net.layers[i].length
 			net.canvasData.layerData[i][3] = net.layers[i].length
 			net.canvasData.layerData[i][4] = 0
 		} else {
-		  //net.canvasData.layerData[i] = [net.layers[i].length,heightDiv,scrollArr[i],canvasHeight/heightDiv,0]
 			net.canvasData.layerData[i][0] = net.layers[i].length
 			net.canvasData.layerData[i][1] = heightDiv
 			net.canvasData.layerData[i][3] = canvasHeight/heightDiv
@@ -656,11 +665,16 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 	}
 	
 	line(widthDiv/4,heightDiv,widthDiv/4,heightDiv*2)
-	line(widthDiv/4 + 20,60,widthDiv/4 + 20,120)
+	
+	line(0, 5,widthDiv/2, 5)
+	line(0,10,widthDiv,10)
+	line(0,15,widthDiv + widthDiv/2,15)
 	
 	for(var i = 0; i < net.canvasData.layerData.length; i++) {
 		if(net.canvasData.layerData[i][0]*heightDiv > canvasHeight) {
-			net.canvasData.layerData[i][4] = Math.floor(-net.canvasData.layerData[i][2]/net.canvasData.layerData[i][1])
+			if(Math.floor(-net.canvasData.layerData[i][2]/net.canvasData.layerData[i][1]) >= 0 && Math.floor(-net.canvasData.layerData[i][2]/net.canvasData.layerData[i][1]) + net.canvasData.layerData[i][3] <= net.canvasData.layerData[i][0]) {
+				net.canvasData.layerData[i][4] = Math.floor(-net.canvasData.layerData[i][2]/net.canvasData.layerData[i][1])
+			}
 		}
 	}
 	
@@ -678,7 +692,7 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 	
 	for(var i = 0; i < net.canvasData.layerData.length; i++) {
 		for(var j = 0; j < net.canvasData.layerData[i][0]; j++) {
-			//drawNode(i*widthDiv + widthOff + widthOffScroll,j*heightDiv + heightOff + net.canvasData.layerData[i][1],'A',false)
+			drawNode(i*widthDiv + widthDiv/2 + widthOffScroll,j*net.canvasData.layerData[i][1] + net.canvasData.layerData[i][1]/2 + net.canvasData.layerData[i][2],j,false)
 		}
 	}
 }
