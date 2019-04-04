@@ -649,6 +649,7 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 	var heightDiv_half = heightDiv/2
 	net.canvasData.heightDiv_half = heightDiv/2
 	
+	//				0						1							2							3							4
 	// cols[Neurons in layer i, heightDiv for this layer, Scroll value for this layer, number of Neurons displayable, First displayable Neuron]
 	for(var i = 0; i < net.canvasData.layerData.length; i++) {
 		if(net.layers[i].length*heightDiv < canvasHeight) {
@@ -664,11 +665,11 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 		}
 	}
 	
-	line(widthDiv/4,heightDiv,widthDiv/4,heightDiv*2)
+	// line(widthDiv/4,heightDiv,widthDiv/4,heightDiv*2)
 	
-	line(0, 5,widthDiv/2, 5)
-	line(0,10,widthDiv,10)
-	line(0,15,widthDiv + widthDiv/2,15)
+	// line(0, 5,widthDiv/2, 5)
+	// line(0,10,widthDiv,10)
+	// line(0,15,widthDiv + widthDiv/2,15)
 	
 	for(var i = 0; i < net.canvasData.layerData.length; i++) {
 		if(net.canvasData.layerData[i][0]*heightDiv > canvasHeight) {
