@@ -545,10 +545,9 @@ function canvasScroll(event) { //Event listener for canvas scrolling
 	
 	for(var i = 0; i < networks[selectedNet].layers.length; i++) {
 		if(mouseX > networks[selectedNet].canvasData.widthDiv/2 + networks[selectedNet].canvasData.widthDiv*i - nodeRadius && mouseX < networks[selectedNet].canvasData.widthDiv/2 + networks[selectedNet].canvasData.widthDiv*i + nodeRadius) {
-			if(event.deltaY > 0) {
-				networks[selectedNet].canvasData.layerData[i][2] += 5
-			} else if(event.deltaY < 0) {
-				networks[selectedNet].canvasData.layerData[i][2] -= 5
+			// Maximum scroll value = #ofNeurons*HeightDiv - #ofNeuronsDisplayable
+			if(true) {
+				networks[selectedNet].canvasData.layerData[i][2] += event.deltaY
 			}
 		}
 	}
