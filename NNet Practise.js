@@ -545,7 +545,6 @@ function canvasScroll(event) { //Event listener for canvas scrolling
 	
 	for(var i = 0; i < networks[selectedNet].layers.length; i++) {
 		if(mouseX > networks[selectedNet].canvasData.widthDiv/2 + networks[selectedNet].canvasData.widthDiv*i - nodeRadius && mouseX < networks[selectedNet].canvasData.widthDiv/2 + networks[selectedNet].canvasData.widthDiv*i + nodeRadius) {
-			console.log(networks[selectedNet].canvasData.layerData[i][2])
 			if(-networks[selectedNet].canvasData.layerData[i][2] - event.deltaY < networks[selectedNet].canvasData.layerData[i][1]*(networks[selectedNet].canvasData.layerData[i][0] - networks[selectedNet].canvasData.layerData[i][3]) == false) {
 				networks[selectedNet].canvasData.layerData[i][2] = -networks[selectedNet].canvasData.layerData[i][1]*(networks[selectedNet].canvasData.layerData[i][0] - networks[selectedNet].canvasData.layerData[i][3])
 			} else if(networks[selectedNet].canvasData.layerData[i][2] + event.deltaY > 0) {
@@ -555,19 +554,6 @@ function canvasScroll(event) { //Event listener for canvas scrolling
 			}
 		}
 	}
-	
-	
-	// for(var i = 0; i < networks[selectedNet].layer.length; i++) {
-		// if(mouseX > networks[selectedNet].layer[i].neuron[0].pos.x - nodeRadius*2 && mouseX < networks[selectedNet].layer[i].neuron[0].pos.x + nodeRadius*2) {
-			// if(event.deltaY > 0 && networks[selectedNet].layer[i].displayOffset < 0) {
-				// networks[selectedNet].layer[i].displayOffset += 10
-			// } 
-			// if(event.deltaY < 0 && networks[selectedNet].layer[i].displayOffset > height - networks[selectedNet].layer[i].neuron.length*3*nodeRadius) {
-				// networks[selectedNet].layer[i].displayOffset -= 10
-			// }
-			//networks[selectedNet].layer[i].displayOffset += event.deltaY
-		// }
-	// }
 }
 
 function networkSelect(input) { //Manages selected network in the 'Networks' drop box
@@ -640,6 +626,8 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 	// Needs to avoid rendering elements that are off canvas to save processing
 	// Needs to scale and scroll both horizontally and vertically
 	
+	nodeRadius = canvasHeight/((15)*3)
+	
 	var widthDiv = canvasWidth/net.layers.length+1
 	net.canvasData.widthDiv = canvasWidth/net.layers.length+1
 	var widthOffScroll = 0
@@ -660,16 +648,10 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 		} else {
 			net.canvasData.layerData[i][0] = net.layers[i].length
 			net.canvasData.layerData[i][1] = heightDiv
-			net.canvasData.layerData[i][3] = canvasHeight/heightDiv
+			net.canvasData.layerData[i][3] = Math.floor(canvasHeight/heightDiv + 1/3)
 			net.canvasData.layerData[i][4] = 0
 		}
 	}
-	
-	// line(widthDiv/4,heightDiv,widthDiv/4,heightDiv*2)
-	
-	// line(0, 5,widthDiv/2, 5)
-	// line(0,10,widthDiv,10)
-	// line(0,15,widthDiv + widthDiv/2,15)
 	
 	for(var i = 0; i < net.canvasData.layerData.length; i++) {
 		if(net.canvasData.layerData[i][0]*heightDiv > canvasHeight) {
