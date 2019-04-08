@@ -542,17 +542,19 @@ function mouseReleased() { //Fixes some issues with incorrect canvas scrolling o
 }
 
 function canvasScroll(event) { //Event listener for canvas scrolling
+
+	SDY = (Math.abs(event.deltaY)/event.deltaY)*8 // Scroll Delta Y
 	
 	for(var i = 0; i < networks[selectedNet].layers.length; i++) {
 		if(mouseX > networks[selectedNet].canvasData.widthDiv/2 + networks[selectedNet].canvasData.widthDiv*i - nodeRadius && mouseX < networks[selectedNet].canvasData.widthDiv/2 + networks[selectedNet].canvasData.widthDiv*i + nodeRadius) {
-			if(-networks[selectedNet].canvasData.layerData[i][2] - event.deltaY < networks[selectedNet].canvasData.layerData[i][1]*(networks[selectedNet].canvasData.layerData[i][0] - networks[selectedNet].canvasData.layerData[i][3]+1) == false) {
-				networks[selectedNet].canvasData.layerData[i][2] = -networks[selectedNet].canvasData.layerData[i][1]*(networks[selectedNet].canvasData.layerData[i][0] - networks[selectedNet].canvasData.layerData[i][3]+1)
+			if(-networks[selectedNet].canvasData.layerData[i][2] - SDY < networks[selectedNet].canvasData.layerData[i][1]*(networks[selectedNet].canvasData.layerData[i][0] - networks[selectedNet].canvasData.layerData[i][3]) == false) {
+				networks[selectedNet].canvasData.layerData[i][2] = -networks[selectedNet].canvasData.layerData[i][1]*(networks[selectedNet].canvasData.layerData[i][0] - networks[selectedNet].canvasData.layerData[i][3])
 				//console.log(networks[selectedNet].canvasData.layerData[i][2])
-			} else if(networks[selectedNet].canvasData.layerData[i][2] + event.deltaY > 0) {
+			} else if(networks[selectedNet].canvasData.layerData[i][2] + SDY > 0) {
 				networks[selectedNet].canvasData.layerData[i][2] = 0
 				//console.log(networks[selectedNet].canvasData.layerData[i][2])
 			} else {
-				networks[selectedNet].canvasData.layerData[i][2] += event.deltaY
+				networks[selectedNet].canvasData.layerData[i][2] += SDY
 				//console.log(networks[selectedNet].canvasData.layerData[i][2])
 			}
 		}
@@ -651,11 +653,7 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 		} else {
 			net.canvasData.layerData[i][0] = net.layers[i].length
 			net.canvasData.layerData[i][1] = heightDiv
-			if(net.canvasData.layerData[i][2] % heightDiv == 0) {
-				net.canvasData.layerData[i][3] = canvasHeight/heightDiv
-			} else {
-				net.canvasData.layerData[i][3] = canvasHeight/heightDiv + 1
-			}
+			net.canvasData.layerData[i][3] = canvasHeight/heightDiv
 			net.canvasData.layerData[i][4] = 0
 		}
 	}
@@ -664,7 +662,7 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 		if(net.canvasData.layerData[i][0]*heightDiv > canvasHeight) {
 			//console.log(Math.floor(-net.canvasData.layerData[i][2]/net.canvasData.layerData[i][1]) + net.canvasData.layerData[i][3],net.canvasData.layerData[i][0])
 			if(Math.floor(-net.canvasData.layerData[i][2]/net.canvasData.layerData[i][1]) + net.canvasData.layerData[i][3] - 1 <= net.canvasData.layerData[i][0]) {
-				net.canvasData.layerData[i][4] = Math.floor(-net.canvasData.layerData[i][2]/net.canvasData.layerData[i][1])
+				net.canvasData.layerData[i][4] = Math.round(-net.canvasData.layerData[i][2]/net.canvasData.layerData[i][1])
 			}
 		}
 	}
@@ -683,7 +681,7 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 	}
 	
 	for(var i = 0; i < net.canvasData.layerData.length; i++) {
-		for(var j = 0; j < net.canvasData.layerData[i][0]; j++) {
+		for(var j = net.canvasData.layerData[i][4]; j < net.canvasData.layerData[i][4] + net.canvasData.layerData[i][3]; j++) {
 			drawNode(i*widthDiv + widthDiv/2 + widthOffScroll,j*net.canvasData.layerData[i][1] + net.canvasData.layerData[i][1]/2 + net.canvasData.layerData[i][2],j,false)
 		}
 	}
@@ -713,4 +711,5 @@ function temp() {
 	console.log('2', networks[selectedNet].canvasData.layerData[2][2])
 	console.log('3', networks[selectedNet].canvasData.layerData[2][3])
 	console.log('4', networks[selectedNet].canvasData.layerData[2][4])
+	console.log('h', canvasHeight)
 }
