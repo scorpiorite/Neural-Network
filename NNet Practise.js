@@ -33,8 +33,6 @@ var benchThis = 0
 var benchLast = 0
 var benchDiff = 0
 
-var scrollArr = []
-
 function setup() { //P5js calls this function on start-up
 	
 	// canvasHeight = windowHeight
@@ -132,9 +130,9 @@ function draw() { //P5js loops this function 60 times per second (as defined by 
 			break;
 		} else {
 			if(networks[selectedNet].lastCorrects[i] === 1) {
-				graphCanvasCTX.strokeStyle = "#00FF00"
+				graphCanvasCTX.strokeStyle = "#00d2ff"
 			} else if(networks[selectedNet].lastCorrects[i] === 0) {
-				graphCanvasCTX.strokeStyle = "#FF0000"
+				graphCanvasCTX.strokeStyle = "#008cff"
 			} else {
 				graphCanvasCTX.strokeStyle = "#000000"
 			}
@@ -376,12 +374,12 @@ function turboToggle() { //Manages TurboMode, attached to 'Turbo' Button
 		turbo = false
 		document.getElementById('turboToggle').parentElement.style.backgroundColor = ''
 		
-		render = 1
+		//render = 1
 	} else {
 		turbo = true
 		document.getElementById('turboToggle').parentElement.style.backgroundColor = '#7bd'
 		turboBuffer = 0
-		render = 0
+		//render = 0
 
 		turboLoop()
 	}
@@ -660,7 +658,6 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 	
 	for(var i = 0; i < net.canvasData.layerData.length; i++) {
 		if(net.canvasData.layerData[i][0]*heightDiv > canvasHeight) {
-			//console.log(Math.floor(-net.canvasData.layerData[i][2]/net.canvasData.layerData[i][1]) + net.canvasData.layerData[i][3],net.canvasData.layerData[i][0])
 			if(Math.floor(-net.canvasData.layerData[i][2]/net.canvasData.layerData[i][1]) + net.canvasData.layerData[i][3] - 1 <= net.canvasData.layerData[i][0]) {
 				net.canvasData.layerData[i][4] = Math.round(-net.canvasData.layerData[i][2]/net.canvasData.layerData[i][1])
 			}
@@ -673,7 +670,17 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 		for(var j = net.canvasData.layerData[i][4]; j < net.canvasData.layerData[i][4] + net.canvasData.layerData[i][3]; j++) {
 			var heightOff = j*net.canvasData.layerData[i][1] + net.canvasData.layerData[i][1]/2
 			for(var n = net.canvasData.layerData[i-1][4]; n < net.canvasData.layerData[i-1][4] + net.canvasData.layerData[i-1][3]; n++) {
-				stroke(0)
+				colorMode(HSB)
+				strokeWeight((1 - 3.7*net.sigmoid_d(net.layers[i][j][1][n])).toFixed(2))
+				H = 200 + (2*net.sigmoid(net.layers[i][j][1][n])-1)*30
+				// S = (1 - 4*net.sigmoid_d(net.layers[i][j][1][n]*net.layers[i][j][0][0]))*100
+				if(net.canvasData.renderMode == 0) {
+					S = 100
+				} else {
+					S = (1 - 4*net.sigmoid_d(net.layers[i][j][1][n]*net.layers[i][j][0][1]))*100
+				}
+				B = 100
+				stroke(H,S,B)
 				noSmooth() //										   |													   |														   |
 				line(Math.round(widthOff + widthOffScroll - nodeRadius), Math.round(heightOff + net.canvasData.layerData[i][2]), Math.round(widthOff_PrevInd + widthOffScroll + nodeRadius), Math.round(n*net.canvasData.layerData[i-1][1] + net.canvasData.layerData[i-1][1]/2 + net.canvasData.layerData[i-1][2]))
 			}
@@ -682,12 +689,19 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 	
 	for(var i = 0; i < net.canvasData.layerData.length; i++) {
 		for(var j = net.canvasData.layerData[i][4]; j < net.canvasData.layerData[i][4] + net.canvasData.layerData[i][3]; j++) {
-			drawNode(i*widthDiv + widthDiv/2 + widthOffScroll,j*net.canvasData.layerData[i][1] + net.canvasData.layerData[i][1]/2 + net.canvasData.layerData[i][2],j,false)
+			if(i == 0) {
+				drawNode(i*widthDiv + widthDiv/2 + widthOffScroll,j*net.canvasData.layerData[i][1] + net.canvasData.layerData[i][1]/2 + net.canvasData.layerData[i][2],net.layers[0][j],false)
+			} else {
+				drawNode(i*widthDiv + widthDiv/2 + widthOffScroll,j*net.canvasData.layerData[i][1] + net.canvasData.layerData[i][1]/2 + net.canvasData.layerData[i][2],net.layers[i][j][0][1],false)
+			}
 		}
 	}
 }
 
 function drawNode(x,y,content,selected) { //Renders Neurons on the canvas (part of 'drawNet')
+	
+	colorMode(RGB)
+	strokeWeight(1)
 	
 	if(selected === true) {
 		fill("pink")
@@ -702,7 +716,11 @@ function drawNode(x,y,content,selected) { //Renders Neurons on the canvas (part 
 	fill(0)
 	textSize(nodeRadius)
 	textAlign(CENTER,CENTER)
-	text(content,x,y)
+	try {
+		text(content.toFixed(2),x,y)
+	} catch(err) {
+		text(0,x,y)
+	}
 }
 
 function temp() {

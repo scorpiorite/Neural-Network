@@ -166,7 +166,8 @@ function network_matrix(id, detailsArray) {
 		widthDiv:0,
 		widthOffScroll:0,
 		heightDiv:0,
-		heightDiv_half:0
+		heightDiv_half:0,
+		renderMode:0
 	}
 	
 	for(var i = 0; i < this.canvasData.layerData.length; i++) {
