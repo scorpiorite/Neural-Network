@@ -545,12 +545,15 @@ function canvasScroll(event) { //Event listener for canvas scrolling
 	
 	for(var i = 0; i < networks[selectedNet].layers.length; i++) {
 		if(mouseX > networks[selectedNet].canvasData.widthDiv/2 + networks[selectedNet].canvasData.widthDiv*i - nodeRadius && mouseX < networks[selectedNet].canvasData.widthDiv/2 + networks[selectedNet].canvasData.widthDiv*i + nodeRadius) {
-			if(-networks[selectedNet].canvasData.layerData[i][2] - event.deltaY < networks[selectedNet].canvasData.layerData[i][1]*(networks[selectedNet].canvasData.layerData[i][0] - networks[selectedNet].canvasData.layerData[i][3]) == false) {
-				networks[selectedNet].canvasData.layerData[i][2] = -networks[selectedNet].canvasData.layerData[i][1]*(networks[selectedNet].canvasData.layerData[i][0] - networks[selectedNet].canvasData.layerData[i][3])
+			if(-networks[selectedNet].canvasData.layerData[i][2] - event.deltaY < networks[selectedNet].canvasData.layerData[i][1]*(networks[selectedNet].canvasData.layerData[i][0] - networks[selectedNet].canvasData.layerData[i][3]+1) == false) {
+				networks[selectedNet].canvasData.layerData[i][2] = -networks[selectedNet].canvasData.layerData[i][1]*(networks[selectedNet].canvasData.layerData[i][0] - networks[selectedNet].canvasData.layerData[i][3]+1)
+				//console.log(networks[selectedNet].canvasData.layerData[i][2])
 			} else if(networks[selectedNet].canvasData.layerData[i][2] + event.deltaY > 0) {
 				networks[selectedNet].canvasData.layerData[i][2] = 0
+				//console.log(networks[selectedNet].canvasData.layerData[i][2])
 			} else {
 				networks[selectedNet].canvasData.layerData[i][2] += event.deltaY
+				//console.log(networks[selectedNet].canvasData.layerData[i][2])
 			}
 		}
 	}
@@ -648,14 +651,19 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 		} else {
 			net.canvasData.layerData[i][0] = net.layers[i].length
 			net.canvasData.layerData[i][1] = heightDiv
-			net.canvasData.layerData[i][3] = Math.floor(canvasHeight/heightDiv + 1/3)
+			if(net.canvasData.layerData[i][2] % heightDiv == 0) {
+				net.canvasData.layerData[i][3] = canvasHeight/heightDiv
+			} else {
+				net.canvasData.layerData[i][3] = canvasHeight/heightDiv + 1
+			}
 			net.canvasData.layerData[i][4] = 0
 		}
 	}
 	
 	for(var i = 0; i < net.canvasData.layerData.length; i++) {
 		if(net.canvasData.layerData[i][0]*heightDiv > canvasHeight) {
-			if(Math.floor(-net.canvasData.layerData[i][2]/net.canvasData.layerData[i][1]) >= 0 && Math.floor(-net.canvasData.layerData[i][2]/net.canvasData.layerData[i][1]) + net.canvasData.layerData[i][3] <= net.canvasData.layerData[i][0]) {
+			//console.log(Math.floor(-net.canvasData.layerData[i][2]/net.canvasData.layerData[i][1]) + net.canvasData.layerData[i][3],net.canvasData.layerData[i][0])
+			if(Math.floor(-net.canvasData.layerData[i][2]/net.canvasData.layerData[i][1]) + net.canvasData.layerData[i][3] - 1 <= net.canvasData.layerData[i][0]) {
 				net.canvasData.layerData[i][4] = Math.floor(-net.canvasData.layerData[i][2]/net.canvasData.layerData[i][1])
 			}
 		}
@@ -667,8 +675,9 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 		for(var j = net.canvasData.layerData[i][4]; j < net.canvasData.layerData[i][4] + net.canvasData.layerData[i][3]; j++) {
 			var heightOff = j*net.canvasData.layerData[i][1] + net.canvasData.layerData[i][1]/2
 			for(var n = net.canvasData.layerData[i-1][4]; n < net.canvasData.layerData[i-1][4] + net.canvasData.layerData[i-1][3]; n++) {
-				stroke(0) //							   |					   					   |											   |
-				line(widthOff + widthOffScroll - nodeRadius, heightOff + net.canvasData.layerData[i][2], widthOff_PrevInd + widthOffScroll + nodeRadius, n*net.canvasData.layerData[i-1][1] + net.canvasData.layerData[i-1][1]/2 + net.canvasData.layerData[i-1][2])
+				stroke(0)
+				noSmooth() //										   |													   |														   |
+				line(Math.round(widthOff + widthOffScroll - nodeRadius), Math.round(heightOff + net.canvasData.layerData[i][2]), Math.round(widthOff_PrevInd + widthOffScroll + nodeRadius), Math.round(n*net.canvasData.layerData[i-1][1] + net.canvasData.layerData[i-1][1]/2 + net.canvasData.layerData[i-1][2]))
 			}
 		}
 	}
@@ -681,7 +690,6 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 }
 
 function drawNode(x,y,content,selected) { //Renders Neurons on the canvas (part of 'drawNet')
-	
 	
 	if(selected === true) {
 		fill("pink")
@@ -697,4 +705,12 @@ function drawNode(x,y,content,selected) { //Renders Neurons on the canvas (part 
 	textSize(nodeRadius)
 	textAlign(CENTER,CENTER)
 	text(content,x,y)
+}
+
+function temp() {
+	console.log('0', networks[selectedNet].canvasData.layerData[2][0])
+	console.log('1', networks[selectedNet].canvasData.layerData[2][1])
+	console.log('2', networks[selectedNet].canvasData.layerData[2][2])
+	console.log('3', networks[selectedNet].canvasData.layerData[2][3])
+	console.log('4', networks[selectedNet].canvasData.layerData[2][4])
 }
