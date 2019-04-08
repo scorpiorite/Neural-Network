@@ -380,7 +380,7 @@ function turboToggle() { //Manages TurboMode, attached to 'Turbo' Button
 		document.getElementById('turboToggle').parentElement.style.backgroundColor = '#7bd'
 		turboBuffer = 0
 		//render = 0
-
+		
 		turboLoop()
 	}
 }
@@ -709,9 +709,21 @@ function drawNode(x,y,content,selected) { //Renders Neurons on the canvas (part 
 		fill(255,255,255)
 	}
 	
-	stroke(0,0,0)
-	ellipse(x,y,nodeRadius*2,nodeRadius*2)
+	noFill()
 	
+	if(content == 0) {
+		strokeWeight(2)
+		stroke(119,187,221)
+		ellipse(x,y,nodeRadius*2,nodeRadius*2)
+	} else {
+		strokeWeight(2)
+		stroke(119,187,221)
+		arc(x,y,nodeRadius*2,nodeRadius*2,PI + HALF_PI + content*2*PI,PI + HALF_PI)
+		stroke(0,255,255)
+		arc(x,y,nodeRadius*2,nodeRadius*2,PI + HALF_PI,PI + HALF_PI + content*2*PI)
+	}
+	
+	strokeWeight(1)
 	stroke(255)
 	fill(0)
 	textSize(nodeRadius)
