@@ -79,11 +79,6 @@ function setup() { //P5js calls this function on start-up
 	//networks.push(parseNetwork(testNetString))
 	networks.push(new network_matrix("test_matrix",[784,18,18,10]))
 	
-	scrollArr = new Array(networks[0].layers.length)
-	for(var i = 0; i < scrollArr.length; i++) {
-		scrollArr[i] = 0
-	}
-	
 	loadNets()
 	
 	stop()
@@ -100,7 +95,7 @@ function draw() { //P5js loops this function 60 times per second (as defined by 
 	}
 	
 	if(render === 1) {
-		drawNet(networks[selectedNet],scrollArr)
+		drawNet(networks[selectedNet])
 	}
 	
 	for(var i = 0; i < networks[selectedNet].layers[networks[selectedNet].layers.length-1].length; i++) {
@@ -343,7 +338,7 @@ function netFunction() { //Manages the function of the active Network
 	}
 }
 
-function turboAdjust() { //Adjusts the Turbo slider according to becnhmarked performance per frame
+function turboAdjust() { //Adjusts the Turbo slider according to benchmarked performance per frame
 	
 	benchLast = benchThis
 	benchThis = new Date()
@@ -639,6 +634,8 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 	net.canvasData.heightDiv = nodeRadius*3
 	var heightDiv_half = heightDiv/2
 	net.canvasData.heightDiv_half = heightDiv/2
+	
+	net.canvasData.layerData[0][2] = -document.getElementById('canvasScroll').value
 	
 	//				0						1							2							3							4
 	// cols[Neurons in layer i, heightDiv for this layer, Scroll value for this layer, number of Neurons displayable, First displayable Neuron]
