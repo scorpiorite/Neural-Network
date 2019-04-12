@@ -392,163 +392,45 @@ function stop() { //Halts and Resumed the networks progress
 }
 
 function canvasClick() { //Manages Neuron Selection on the Canvas
+	
 	var selectedCount = 0
 	
-	for(var i = 0; i < networks[selectedNet].layer.length; i++) {
-		for(var j = 0; j < networks[selectedNet].layer[i].neuron.length; j++) {
-			networks[selectedNet].layer[i].neuron[j].selectedIndex = int
+	//console.log(mouseX,mouseY)
+	
+	canvasData = networks[selectedNet].canvasData
+	
+	for(var i = 0; i < canvasData.layerData.length; i++) {
+		if(mouseX > canvasData.widthDiv*i + canvasData.widthDiv/2 - nodeRadius && mouseX < canvasData.widthDiv*i + canvasData.widthDiv/2 + nodeRadius) {
+			//console.log(i)
 		}
-	}
-	
-	for(var i = 0; i < networks[selectedNet].layer.length; i++) {
-		for(var j = 0; j < networks[selectedNet].layer[i].neuron.length; j++) {
-			if(networks[selectedNet].layer[i].neuron[j].selected === true) {
-				selectedCount++
-			}
+		
+		
+		index = Math.round(mouseX/canvasData.widthDiv - 1/2)
+		if(mouseX > canvasData.widthDiv*index + canvasData.widthDiv/2 - nodeRadius && mouseX < canvasData.widthDiv*index + canvasData.widthDiv/2 + nodeRadius) {
+			console.log(index)
 		}
+		//console.log(index)
 	}
 	
-	var selectedCountPast = selectedCount
-	
-	for(var i = 0; i < networks[selectedNet].layer.length; i++) {
-		for(var j = 0; j < networks[selectedNet].layer[i].neuron.length; j++) {
-			if(dist(networks[selectedNet].layer[i].neuron[j].pos.x,networks[selectedNet].layer[i].neuron[j].pos.y,mouseX,mouseY) < nodeRadius) {
-				
-				if(selectedCount === 0) {
-					networks[selectedNet].layer[i].neuron[j].selected = true
-					selectedCount++
-				} else if(selectedCount === 1) {
-					
-					if(i > 0) {
-						for(var n = 0; n < networks[selectedNet].layer[i-1].neuron.length; n++) {
-							if(networks[selectedNet].layer[i-1].neuron[n].selected === true) {
-								networks[selectedNet].layer[i].neuron[j].selected = true
-								networks[selectedNet].layer[i].neuron[j].selectedIndex = n
-								selectedCount++
-							}
-						}
-					}
-					if(i < networks[selectedNet].layer.length-1) {
-						for(var n = 0; n < networks[selectedNet].layer[i+1].neuron.length; n++) {
-							if(networks[selectedNet].layer[i+1].neuron[n].selected === true) {
-								networks[selectedNet].layer[i].neuron[j].selected = true
-								networks[selectedNet].layer[i+1].neuron[n].selectedIndex = j
-								selectedCount++
-							}
-						}
-					}
-					if(selectedCount !== 2) {
-						for(var k = 0; k < networks[selectedNet].layer.length; k ++) {
-							for(var m = 0; m < networks[selectedNet].layer[k].neuron.length; m++) {
-								networks[selectedNet].layer[k].neuron[m].selected = false
-								selectedCount--
-							}
-						}
-						networks[selectedNet].layer[i].neuron[j].selected = true
-						selectedCount++
-					}
-					
-				} else if(selectedCount === 2) {
-					
-					if(i > 0) {
-						for(var n = 0; n < networks[selectedNet].layer[i-1].neuron.length; n++) {
-							if(networks[selectedNet].layer[i-1].neuron[n].selected === true) {
-								networks[selectedNet].layer[i].neuron[j].selectedIndex = n
-								selectedCount++
-							}
-						}
-					}
-					if(i < networks[selectedNet].layer.length-1) {
-						for(var n = 0; n < networks[selectedNet].layer[i+1].neuron.length; n++) {
-							if(networks[selectedNet].layer[i+1].neuron[n].selected === true) {
-								networks[selectedNet].layer[i+1].neuron[n].selectedIndex = j
-								selectedCount++
-							}
-						}
-					}
-					if(selectedCount !== 3) {
-						for(var k = 0; k < networks[selectedNet].layer.length; k ++) {
-							for(var m = 0; m < networks[selectedNet].layer[k].neuron.length; m++) {
-								networks[selectedNet].layer[k].neuron[m].selected = false
-								selectedCount--
-							}
-						}
-					} else {
-						for(var k = 0; k < networks[selectedNet].layer.length; k++) {
-							for(var m = 0; m < networks[selectedNet].layer[k].neuron.length; m++) {
-								if(k !== i-1 && k!== i+1) {
-									networks[selectedNet].layer[k].neuron[m].selected = false
-									selectedCount--
-								}
-							}
-						}
-					}
-					networks[selectedNet].layer[i].neuron[j].selected = true
-				} else if(selectedCount > 2) {
-					for(var k = 0; k < networks[selectedNet].layer.length; k ++) {
-						for(var m = 0; m < networks[selectedNet].layer[k].neuron.length; m++) {
-							networks[selectedNet].layer[k].neuron[m].selected = false
-							selectedCount--
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	if(selectedCount === selectedCountPast) {
-		for(var i = 0; i < networks[selectedNet].layer.length; i++) {
-			for(var j = 0; j < networks[selectedNet].layer[i].neuron.length; j++) {
-				networks[selectedNet].layer[i].neuron[j].selected = false
-			}
-		}
-	}
-	
-	var count = 0
-	
-	document.getElementById("detailsLeft").innerHTML = ""
-	document.getElementById("detailsRight").innerHTML = ""
-	
-	for(var i = 0; i < networks[selectedNet].layer.length; i++) {
-		for(var j = 0; j < networks[selectedNet].layer[i].neuron.length; j++) {
-			if(networks[selectedNet].layer[i].neuron[j].selected === true) {
-				if(count === 0) {
-					displayNeuron(networks[selectedNet].layer[i].neuron[j],"detailsLeft")
-					count++
-				} else if(count === 1) {
-					displayNeuron(networks[selectedNet].layer[i].neuron[j],"detailsRight")
-					count++
-				}
-			}
-		}
-	}
-	
-	if(mouseX < scrollBar.width && mouseY > scrollBar.pos && mouseY < scrollBar.pos + scrollBar.length) {
-		scrollBar.clicked = true
-		scrollBar.clickPos = mouseY - scrollBar.pos
-	}
-}
-
-function mouseReleased() { //Fixes some issues with incorrect canvas scrolling on mouseoff
-	scrollBar.clicked = false
-	networks[selectedNet].layer[0].displayOffset = Math.ceil(networks[selectedNet].layer[0].displayOffset / 10) * 10
 }
 
 function canvasScroll(event) { //Event listener for canvas scrolling
 
 	SDY = (Math.abs(event.deltaY)/event.deltaY)*8 // Scroll Delta Y
+	SDY = -event.deltaY
 	
 	for(var i = 0; i < networks[selectedNet].layers.length; i++) {
 		if(mouseX > networks[selectedNet].canvasData.widthDiv/2 + networks[selectedNet].canvasData.widthDiv*i - nodeRadius && mouseX < networks[selectedNet].canvasData.widthDiv/2 + networks[selectedNet].canvasData.widthDiv*i + nodeRadius) {
 			if(-networks[selectedNet].canvasData.layerData[i][2] - SDY < networks[selectedNet].canvasData.layerData[i][1]*(networks[selectedNet].canvasData.layerData[i][0] - networks[selectedNet].canvasData.layerData[i][3]) == false) {
 				networks[selectedNet].canvasData.layerData[i][2] = -networks[selectedNet].canvasData.layerData[i][1]*(networks[selectedNet].canvasData.layerData[i][0] - networks[selectedNet].canvasData.layerData[i][3])
-				//console.log(networks[selectedNet].canvasData.layerData[i][2])
 			} else if(networks[selectedNet].canvasData.layerData[i][2] + SDY > 0) {
 				networks[selectedNet].canvasData.layerData[i][2] = 0
-				//console.log(networks[selectedNet].canvasData.layerData[i][2])
 			} else {
 				networks[selectedNet].canvasData.layerData[i][2] += SDY
-				//console.log(networks[selectedNet].canvasData.layerData[i][2])
+			}
+			
+			if(i == 0) {
+				document.getElementById('canvasScroll').value = -networks[selectedNet].canvasData.layerData[0][2]
 			}
 		}
 	}
@@ -635,6 +517,7 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 	var heightDiv_half = heightDiv/2
 	net.canvasData.heightDiv_half = heightDiv/2
 	
+	document.getElementById('canvasScroll').max = heightDiv*(net.canvasData.layerData[0][0] - net.canvasData.layerData[0][3])
 	net.canvasData.layerData[0][2] = -document.getElementById('canvasScroll').value
 	
 	//				0						1							2							3							4
@@ -669,14 +552,22 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 			for(var n = net.canvasData.layerData[i-1][4]; n < net.canvasData.layerData[i-1][4] + net.canvasData.layerData[i-1][3]; n++) {
 				colorMode(HSB)
 				strokeWeight((1 - 3.7*net.sigmoid_d(net.layers[i][j][1][n])).toFixed(2))
-				H = 200 + (2*net.sigmoid(net.layers[i][j][1][n])-1)*30
-				// S = (1 - 4*net.sigmoid_d(net.layers[i][j][1][n]*net.layers[i][j][0][0]))*100
+				
+				if(j == net.canvasData.layerData[i][5] && n == net.canvasData.layerData[i-1][5]) {
+					strokeWeight(1)
+					H = 0
+				} else {
+					H = 200 + (2*net.sigmoid(net.layers[i][j][1][n])-1)*30
+				}
+				
 				if(net.canvasData.renderMode == 0) {
 					S = 100
 				} else {
 					S = (1 - 4*net.sigmoid_d(net.layers[i][j][1][n]*net.layers[i][j][0][1]))*100
 				}
+				
 				B = 100
+				
 				stroke(H,S,B)
 				noSmooth() //										   |													   |														   |
 				line(Math.round(widthOff + widthOffScroll - nodeRadius), Math.round(heightOff + net.canvasData.layerData[i][2]), Math.round(widthOff_PrevInd + widthOffScroll + nodeRadius), Math.round(n*net.canvasData.layerData[i-1][1] + net.canvasData.layerData[i-1][1]/2 + net.canvasData.layerData[i-1][2]))
@@ -686,10 +577,17 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 	
 	for(var i = 0; i < net.canvasData.layerData.length; i++) {
 		for(var j = net.canvasData.layerData[i][4]; j < net.canvasData.layerData[i][4] + net.canvasData.layerData[i][3]; j++) {
-			if(i == 0) {
-				drawNode(i*widthDiv + widthDiv/2 + widthOffScroll,j*net.canvasData.layerData[i][1] + net.canvasData.layerData[i][1]/2 + net.canvasData.layerData[i][2],net.layers[0][j],false)
+			
+			if(j == net.canvasData.layerData[i][5]) {
+				selected = true
 			} else {
-				drawNode(i*widthDiv + widthDiv/2 + widthOffScroll,j*net.canvasData.layerData[i][1] + net.canvasData.layerData[i][1]/2 + net.canvasData.layerData[i][2],net.layers[i][j][0][1],false)
+				selected = false
+			}
+			
+			if(i == 0) {
+				drawNode(i*widthDiv + widthDiv/2 + widthOffScroll,j*net.canvasData.layerData[i][1] + net.canvasData.layerData[i][1]/2 + net.canvasData.layerData[i][2],net.layers[0][j],selected)
+			} else {
+				drawNode(i*widthDiv + widthDiv/2 + widthOffScroll,j*net.canvasData.layerData[i][1] + net.canvasData.layerData[i][1]/2 + net.canvasData.layerData[i][2],net.layers[i][j][0][1],selected)
 			}
 		}
 	}
@@ -708,16 +606,30 @@ function drawNode(x,y,content,selected) { //Renders Neurons on the canvas (part 
 	
 	noFill()
 	
-	if(content == 0) {
-		strokeWeight(2)
-		stroke(119,187,221)
-		ellipse(x,y,nodeRadius*2,nodeRadius*2)
+	if(selected == false) {
+		if(content == 0) {
+			strokeWeight(2)
+			stroke(119,187,221)
+			ellipse(x,y,nodeRadius*2,nodeRadius*2)
+		} else {
+			strokeWeight(2)
+			stroke(119,187,221)
+			arc(x,y,nodeRadius*2,nodeRadius*2,PI + HALF_PI + content*2*PI,PI + HALF_PI)
+			stroke(0,255,255)
+			arc(x,y,nodeRadius*2,nodeRadius*2,PI + HALF_PI,PI + HALF_PI + content*2*PI)
+		}
 	} else {
-		strokeWeight(2)
-		stroke(119,187,221)
-		arc(x,y,nodeRadius*2,nodeRadius*2,PI + HALF_PI + content*2*PI,PI + HALF_PI)
-		stroke(0,255,255)
-		arc(x,y,nodeRadius*2,nodeRadius*2,PI + HALF_PI,PI + HALF_PI + content*2*PI)
+		if(content == 0) {
+			strokeWeight(2)
+			stroke(119,187,221)
+			ellipse(x,y,nodeRadius*2,nodeRadius*2)
+		} else {
+			strokeWeight(2)
+			stroke(255,200,200)
+			arc(x,y,nodeRadius*2,nodeRadius*2,PI + HALF_PI + content*2*PI,PI + HALF_PI)
+			stroke(255,0,0)
+			arc(x,y,nodeRadius*2,nodeRadius*2,PI + HALF_PI,PI + HALF_PI + content*2*PI)
+		}
 	}
 	
 	strokeWeight(1)

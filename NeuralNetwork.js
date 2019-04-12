@@ -171,13 +171,8 @@ function network_matrix(id, detailsArray) {
 	}
 	
 	for(var i = 0; i < this.canvasData.layerData.length; i++) {
-		this.canvasData.layerData[i] = new Array(5)
+		this.canvasData.layerData[i] = new Array(6)
 		this.canvasData.layerData[i][2] = 0
-	}
-	
-	for(var i = 0; i < this.canvasData.length; i++) {
-		this.canvasData[i] = new Array(5)
-		this.canvasData[i][2] = 0
 	}
 	
 	for(var i = 0; i < detailsArray.length; i++) { //	Build data structure

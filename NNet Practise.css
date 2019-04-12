@@ -162,7 +162,7 @@ div {
 .slideContainerVert {
 	height: 0%;
 	width: 95vh;
-	background-color: pink;
+	background-color: grey;
 	transform: rotate(90deg) translateX(50%) translateY(45vh);
 	position: relative;
 	float: left;
@@ -173,7 +173,7 @@ div {
 	appearance: none;
 	width: 100%; /* Full-width */
 	height: 25px; /* Specified height */
-	background: pink; /* Grey background */
+	background: grey; /* Grey background */
 	outline: none; /* Remove outline */
 	opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
 	-webkit-transition: .2s; /* 0.2 seconds transition on hover */
@@ -187,7 +187,7 @@ div {
 	appearance: none;
 	width: 25px; /* Set a specific slider handle width */
 	height: 25px; /* Slider handle height */
-	background: #4CAF50; /* Green background */
+	background: lightblue; /* Green background */
 	cursor: pointer; /* Cursor on hover */
 }
 
