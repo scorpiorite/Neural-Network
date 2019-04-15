@@ -161,8 +161,7 @@ function netTemp(x) {
 
 function newNet() { //Opens 'new Network' IU, attached to 'New Network' Button
 	document.getElementById('newNet').style.display = 'block'
-	document.getElementById('detailsLeft').style.display = 'none'
-	document.getElementById('detailsRight').style.display = 'none'
+	document.getElementById('details').style.display = 'none'
 	
 	if(LTask === 1) {
 		document.getElementById("newNet").childNodes[12].value = 15
@@ -393,10 +392,6 @@ function stop() { //Halts and Resumed the networks progress
 
 function canvasClick() { //Manages Neuron Selection on the Canvas
 	
-	var selectedCount = 0
-	
-	//console.log(mouseX,mouseY)
-	
 	canvasData = networks[selectedNet].canvasData
 	
 	col = Math.round((mouseX                               )/canvasData.widthDiv          - 1/2)
@@ -407,12 +402,15 @@ function canvasClick() { //Manages Neuron Selection on the Canvas
 		y: row*canvasData.layerData[col][1] + canvasData.layerData[col][1]/2
 	}
 	
-	console.log(point_)
-	
+	// d  = Square Root(( X1  -    X2   )^2  + (                  Y1                    -    Y2   )^2 )
 	dist_ = Math.sqrt((mouseX - point_.x)**2 + ((mouseY - canvasData.layerData[col][2]) - point_.y)**2)
 	
 	if(dist_ < nodeRadius) {
-		networks[selectedNet].canvasData.layerData[col][5] = row
+		if(networks[selectedNet].canvasData.layerData[col][5] === row) {
+			networks[selectedNet].canvasData.layerData[col][5] = NaN
+		} else {
+			networks[selectedNet].canvasData.layerData[col][5] = row
+		}
 	}
 }
 

@@ -396,8 +396,21 @@ div {
 
 .details {
 	height: 90%;
-	width: 50%;
+	width: 100%;
 	float: left;
+	overflow: auto;
+}
+
+.neuron {
+	height: 15%;
+	width: 100%;
+	background-color: green;
+}
+
+.weight {
+	height: 15%;
+	width: 100%;
+	background-color: pink;
 }
 
 #temp {
