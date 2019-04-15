@@ -399,15 +399,17 @@ function canvasClick() { //Manages Neuron Selection on the Canvas
 	
 	canvasData = networks[selectedNet].canvasData
 	
-	col = Math.round(mouseX/canvasData.widthDiv - 1/2)
-	row = Math.round(mouseY/canvasData.layerData[col][1] - 1/2)
+	col = Math.round((mouseX                               )/canvasData.widthDiv          - 1/2)
+	row = Math.round((mouseY - canvasData.layerData[col][2])/canvasData.layerData[col][1] - 1/2)
 	
 	point_ = {
 		x: col*canvasData.widthDiv 			+ canvasData.widthDiv/2,
 		y: row*canvasData.layerData[col][1] + canvasData.layerData[col][1]/2
 	}
 	
-	dist_ = Math.sqrt((mouseX - point_.x)**2 + (mouseY - point_.y)**2)
+	console.log(point_)
+	
+	dist_ = Math.sqrt((mouseX - point_.x)**2 + ((mouseY - canvasData.layerData[col][2]) - point_.y)**2)
 	
 	if(dist_ < nodeRadius) {
 		networks[selectedNet].canvasData.layerData[col][5] = row
