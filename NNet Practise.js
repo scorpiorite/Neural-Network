@@ -399,19 +399,19 @@ function canvasClick() { //Manages Neuron Selection on the Canvas
 	
 	canvasData = networks[selectedNet].canvasData
 	
-	for(var i = 0; i < canvasData.layerData.length; i++) {
-		if(mouseX > canvasData.widthDiv*i + canvasData.widthDiv/2 - nodeRadius && mouseX < canvasData.widthDiv*i + canvasData.widthDiv/2 + nodeRadius) {
-			//console.log(i)
-		}
-		
-		
-		index = Math.round(mouseX/canvasData.widthDiv - 1/2)
-		if(mouseX > canvasData.widthDiv*index + canvasData.widthDiv/2 - nodeRadius && mouseX < canvasData.widthDiv*index + canvasData.widthDiv/2 + nodeRadius) {
-			console.log(index)
-		}
-		//console.log(index)
+	col = Math.round(mouseX/canvasData.widthDiv - 1/2)
+	row = Math.round(mouseY/canvasData.layerData[col][1] - 1/2)
+	
+	point_ = {
+		x: col*canvasData.widthDiv 			+ canvasData.widthDiv/2,
+		y: row*canvasData.layerData[col][1] + canvasData.layerData[col][1]/2
 	}
 	
+	dist_ = Math.sqrt((mouseX - point_.x)**2 + (mouseY - point_.y)**2)
+	
+	if(dist_ < nodeRadius) {
+		networks[selectedNet].canvasData.layerData[col][5] = row
+	}
 }
 
 function canvasScroll(event) { //Event listener for canvas scrolling
