@@ -401,16 +401,41 @@ div {
 	overflow: auto;
 }
 
-.neuron {
+.neuronListing {
 	height: 15%;
 	width: 100%;
 	background-color: green;
+	border-bottom: black solid 1px;
 }
 
-.weight {
+.weightListing {
 	height: 15%;
 	width: 100%;
 	background-color: pink;
+	border-bottom: black solid 1px;
+}
+
+.neuronDisplay {
+	height: 100%;
+	width: 6.75vh;
+	background-color: white;
+	box-sizing: border box;
+	border-right: solid black 1px;
+	float: left;
+}
+
+.weightDisplay {
+	height: 100%;
+	width: 6.75vh;
+	background-color: silver;
+	box-sizing: border box;
+	border-right: solid black 1px;
+}
+
+.neuronCanvas {
+	width: 100%;
+	height: 100%;
+	background-color: purple;
 }
 
 #temp {

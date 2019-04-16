@@ -408,16 +408,63 @@ function canvasClick() { //Manages Neuron Selection on the Canvas
 	if(dist_ < nodeRadius) {
 		if(networks[selectedNet].canvasData.layerData[col][5] === row) {
 			networks[selectedNet].canvasData.layerData[col][5] = NaN
+			remNeuronListing(col,row)
+		} else if(networks[selectedNet].canvasData.layerData[col][5] != NaN) {
+			remNeuronListing(col,networks[selectedNet].canvasData.layerData[col][5])
+			networks[selectedNet].canvasData.layerData[col][5] = row
+			addNeuronListing(col,row)
 		} else {
 			networks[selectedNet].canvasData.layerData[col][5] = row
+			addNeuronListing(col,row)
 		}
 	}
 }
 
-function canvasScroll(event) { //Event listener for canvas scrolling
+function addNeuronListing(col,row) { // Add a Neuron Listing to the Details div
+	console.log('Add')
+	
+	neuronListing = document.createElement("div")   // Initialise The 'Neuron' Element
+	neuronListing.classList.add("neuronListing")
+	
+	neuronDisplay = document.createElement("div")   // Initialise The Neuron display box
+	neuronDisplay.classList.add("neuronDisplay")
+	
+	neuronCanvas = document.createElement("Canvas") // Initialise the Neuron rendering canvas
+	neuronCanvas.classList.add("neuronCanvas")
+	
+	neuronDisplay.appendChild(neuronCanvas)  // Append the neuron canvas to the display box
+	neuronListing.appendChild(neuronDisplay) // Append the display box to the neuron listing
+	
+	neuronListing.id = col + ' ' + row
+	neuronListing.innerHTML += col + ' ' + row
+	
+	document.getElementById('details').appendChild(neuronListing)
+}
 
+function remNeuronListing(col,row) { // Remove a Neuron Listing from the Details div
+	console.log('Rem')
+	
+	details = document.getElementById('details')
+	
+	for(var i = 0; i < details.childNodes.length; i++) {
+		if(details.childNodes[i].id == col + ' ' + row) {
+			details.removeChild(details.childNodes[i])
+		}
+	}
+}
+
+function addWeightListing() {
+	
+}
+
+function remWeightListing() {
+	
+}
+
+function canvasScroll(event) { //Event listener for canvas scrolling
+	
 	SDY = (Math.abs(event.deltaY)/event.deltaY)*8 // Scroll Delta Y
-	SDY = -event.deltaY
+	//SDY = -event.deltaY
 	
 	for(var i = 0; i < networks[selectedNet].layers.length; i++) {
 		if(mouseX > networks[selectedNet].canvasData.widthDiv/2 + networks[selectedNet].canvasData.widthDiv*i - nodeRadius && mouseX < networks[selectedNet].canvasData.widthDiv/2 + networks[selectedNet].canvasData.widthDiv*i + nodeRadius) {
