@@ -457,7 +457,7 @@ function addNeuronListing(col,row) { // Add a Neuron Listing to the Details div
 		
 		try { // Creating the id array fails if an element (i.e a text node) does not have an id
 			
-			// Seperate the id (in string format) back into the 'col' and 'row' componenets for evaluation
+			// Seperate the id (in string format) back into the 'col' and 'row' components for evaluation
 			id = details.childNodes[i].id.split(' ')
 			
 		} catch(err) {
@@ -466,7 +466,7 @@ function addNeuronListing(col,row) { // Add a Neuron Listing to the Details div
 			
 		}
 		
-		if(id.length == 2 && id[0] > col) { // If the first component of the id (the respective element's column) is creater than the column of the new element
+		if(id.length == 2 && id[0] > col || id.length == 4 && id[0] == col) { // If the first component of the id (the respective element's column) is greater than the column of the new element
 			
 			// Append the new element before the current element, set the added flag to true, and break the loop
 			details.insertBefore(neuronListing, document.getElementById('details').childNodes[i])
@@ -505,19 +505,19 @@ function checkWeights() { // Detects when adding a Weight Listing should be adde
 	
 	listedWeights = []
 	
-	for(var i = 0; i < details.childNodes.length; i++) {
+	for(var i = 0; i < details.childNodes.length; i++) { // For each element in the details div
 		
-		try {
+		try { // id assignment fails if childNodes[i] does not have an id
 			
-			id = details.childNodes[i].id.split(' ')
+			id = details.childNodes[i].id.split(' ') // Convert string format id of the elements to an array
 			
 		} catch(err) {
 			
-			id = []
+			id = [] // Value that fails later tests
 			
 		}
 		
-		if(id.length == 4) {
+		if(id.length == 4) { // If the element is a weight listing (only weight listings have 4 arguments)
 			
 			listedWeights.push(id)
 			
@@ -525,29 +525,25 @@ function checkWeights() { // Detects when adding a Weight Listing should be adde
 		
 	}
 	
-	for(var i = 0; i < layerData.length-1; i++) {
+	for(var i = 0; i < layerData.length-1; i++) { // For every network layer
 		
-		if(layerData[i][5] > -1) {
+		if(layerData[i][5] > -1 && layerData[i+1][5] > -1) { // If two consecutive layers have selected neurons
 			
-			if(layerData[i+1][5] > -1) {
+			listingExists = false // Test Flag
+			
+			for(var j = 0; j < listedWeights.length; j++) { // For every listed weight
 				
-				listingExists = false
-				
-				for(var j = 0; j < listedWeights.length; j++) {
+				if(listedWeights[j][0] == i && listedWeights[j][2] == i+1) { // If the start and end columns of the weight correspond to current pair of selected neurons then:
 					
-					if(listedWeights[j][0] == i && listedWeights[j][2] == i+1) {
-						
-						listingExists = true
-						
-					}
+					listingExists = true // This weight listing already exists
 					
 				}
 				
-				if(!listingExists) {
-					
-					addWeightListing(i,layerData[i][5],i+1,layerData[i+1][5])
-					
-				}
+			}
+			
+			if(!listingExists) { // If this weight listing does not exist yet:
+				
+				addWeightListing(i,layerData[i][5],i+1,layerData[i+1][5]) // Add the weight listing
 				
 			}
 			
@@ -555,11 +551,11 @@ function checkWeights() { // Detects when adding a Weight Listing should be adde
 		
 	}
 	
-	for(var i = 0; i < listedWeights.length; i++) {
+	for(var i = 0; i < listedWeights.length; i++) { // For all weight listings
 		
-		for(var j = 0; j < layerData.length; i++) {
+		if(layerData[listedWeights[i][0]][5] > -1 && layerData[listedWeights[i][2]][5] > -1) {} else { // If there is no selected neuron in either column corresponding to the weight listing:
 			
-			
+			remWeightListing(listedWeights[i][0],listedWeights[i][1],listedWeights[i][2],listedWeights[i][3]) // Remove the weight listing
 			
 		}
 		
@@ -586,7 +582,33 @@ function addWeightListing(iniCol,iniRow,endCol,endRow) { // Add a Weight Listing
 	weightListing.id = iniCol + ' ' + iniRow + ' ' + endCol + ' ' + endRow
 	weightListing.innerHTML += iniCol + ' ' + iniRow + ' ' + endCol + ' ' + endRow
 	
-	details.appendChild(weightListing)
+	for(var i = 0; i < details.childNodes.length; i++) { // Iterate through all elements in the Display Div
+		
+		try { // Creating the id array fails if an element (i.e a text node) does not have an id
+			
+			// Seperate the id (in string format) back into the 'col' and 'row' components for evaluation
+			id = details.childNodes[i].id.split(' ')
+			
+		} catch(err) {
+			
+			id = [] // Value that never passes
+			
+		}
+		
+		if(id.length == 2 && id[0] == endCol) { // If the first component of the id (the respective element's column) is greater than the column of the new element
+			
+			// Append the new element before the current element, set the added flag to true, and break the loop
+			details.insertBefore(weightListing, document.getElementById('details').childNodes[i])
+			added = true
+			break;
+			
+		}
+	}
+	
+	if(!added) { // If the new element has not been added yet, append it to the end of the list
+		details.appendChild(weightListing) // This should never Happen
+	}
+	
 }
 
 function remWeightListing(iniCol,iniRow,endCol,endRow) { // Remove a Weight Listing from the Details div
