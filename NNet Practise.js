@@ -490,14 +490,20 @@ function remNeuronListing(col,row) { // Remove a Neuron Listing from the Details
 	
 	for(var i = 0; i < details.childNodes.length; i++) {
 		if(details.childNodes[i].id == col + ' ' + row) {
-			details.removeChild(details.childNodes[i])
+			details.childNodes[i].style.animation = 'fadeout 1s'
+			removeTarget = details.childNodes[i]
+			removeTarget.parentNode.removeChild(removeTarget)
+			
+			temp = document.createElement('div')
+			temp.classList.add('ghostListing')
+			details.insertBefore(temp,details.childNodes[i])
 		}
 	}
 	
 	checkWeights() // Manages weight placement
 }
 
-function checkWeights() { // Detects when adding a Weight Listing should be added to the Display Div
+function checkWeights() { // Detects when adding a Weight Listing should be added to the Display div
 
 	details = document.getElementById('details')
 	
@@ -617,7 +623,13 @@ function remWeightListing(iniCol,iniRow,endCol,endRow) { // Remove a Weight List
 	
 	for(var i = 0; i < details.childNodes.length; i++) {
 		if(details.childNodes[i].id == iniCol + ' ' + iniRow + ' ' + endCol + ' ' + endRow) {
-			details.removeChild(details.childNodes[i])
+			details.childNodes[i].style.animation = 'fadeout 1s'
+			removeTarget = details.childNodes[i]
+			removeTarget.parentNode.removeChild(removeTarget)
+			
+			temp = document.createElement('div')
+			temp.classList.add('ghostListing')
+			details.insertBefore(temp,details.childNodes[i])
 		}
 	}
 }
