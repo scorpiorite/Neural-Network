@@ -430,6 +430,7 @@ div {
 	background-color: silver;
 	box-sizing: border box;
 	border-right: solid black 1px;
+	float: left;
 }
 
 .neuronCanvas {

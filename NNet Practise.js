@@ -394,36 +394,49 @@ function canvasClick() { //Manages Neuron Selection on the Canvas
 	
 	canvasData = networks[selectedNet].canvasData
 	
-	col = Math.round((mouseX                               )/canvasData.widthDiv          - 1/2)
-	row = Math.round((mouseY - canvasData.layerData[col][2])/canvasData.layerData[col][1] - 1/2)
+	// Finds a 'grid region' in which the cursor has clicked -- Each grid contains only one neuron
+	col = Math.round((mouseX                               )/canvasData.widthDiv          - 1/2) // Which column the mouse pointer is in
+	row = Math.round((mouseY - canvasData.layerData[col][2])/canvasData.layerData[col][1] - 1/2) // Which row the mouse pointer is in
 	
-	point_ = {
+	point_ = { // Object containing x,y for the coordinates of the centre of the Neuron corresponding to the grid in which the cursor has selected
 		x: col*canvasData.widthDiv 			+ canvasData.widthDiv/2,
 		y: row*canvasData.layerData[col][1] + canvasData.layerData[col][1]/2
 	}
 	
+	// Calculates the distance of the cursor from the centre of the appropriate neuron
 	// d  = Square Root(( X1  -    X2   )^2  + (                  Y1                    -    Y2   )^2 )
-	dist_ = Math.sqrt((mouseX - point_.x)**2 + ((mouseY - canvasData.layerData[col][2]) - point_.y)**2)
+	dist_ = Math.sqrt((mouseX - point_.x)**2 + ((mouseY - canvasData.layerData[col][2]) - point_.y)**2) 
 	
-	if(dist_ < nodeRadius) {
-		if(networks[selectedNet].canvasData.layerData[col][5] === row) {
+	if(dist_ < nodeRadius) { // If the cursor is on the neuron
+		
+		if(networks[selectedNet].canvasData.layerData[col][5] === row) { // If That neuron is already selected
+			
+			// Deselect the neuron and remove the display Listing
 			networks[selectedNet].canvasData.layerData[col][5] = NaN
 			remNeuronListing(col,row)
-		} else if(networks[selectedNet].canvasData.layerData[col][5] != NaN) {
+			
+		} else if(networks[selectedNet].canvasData.layerData[col][5] != NaN) { // Otherwise if another neuron in that layer is selected
+			
+			// Remove the listing for the other neuron, change the row selection to this neuron, and add a display listing for this neuron
 			remNeuronListing(col,networks[selectedNet].canvasData.layerData[col][5])
 			networks[selectedNet].canvasData.layerData[col][5] = row
 			addNeuronListing(col,row)
-		} else {
+			
+		} else { // Otherwise (if there is no other neuron selected in this row)
+			
+			// Select this neuron and add a display listing for it
 			networks[selectedNet].canvasData.layerData[col][5] = row
 			addNeuronListing(col,row)
+			
 		}
 	}
 }
 
 function addNeuronListing(col,row) { // Add a Neuron Listing to the Details div
-	console.log('Add')
 	
-	neuronListing = document.createElement("div")   // Initialise The 'Neuron' Element
+	details = document.getElementById('details')
+	
+	neuronListing = document.createElement("div")   // Initialise The 'neuronListing' Element
 	neuronListing.classList.add("neuronListing")
 	
 	neuronDisplay = document.createElement("div")   // Initialise The Neuron display box
@@ -438,11 +451,40 @@ function addNeuronListing(col,row) { // Add a Neuron Listing to the Details div
 	neuronListing.id = col + ' ' + row
 	neuronListing.innerHTML += col + ' ' + row
 	
-	document.getElementById('details').appendChild(neuronListing)
+	added = false // flag for success in appending the new 'neuronListing' element
+	
+	for(var i = 0; i < details.childNodes.length; i++) { // Iterate through all elements in the Display Div
+		
+		try { // Creating the id array fails if an element (i.e a text node) does not have an id
+			
+			// Seperate the id (in string format) back into the 'col' and 'row' componenets for evaluation
+			id = details.childNodes[i].id.split(' ')
+			
+		} catch(err) {
+			
+			id = [] // Value that never passes
+			
+		}
+		
+		if(id.length == 2 && id[0] > col) { // If the first component of the id (the respective element's column) is creater than the column of the new element
+			
+			// Append the new element before the current element, set the added flag to true, and break the loop
+			details.insertBefore(neuronListing, document.getElementById('details').childNodes[i])
+			added = true
+			break;
+			
+		}
+	}
+	
+	if(!added) { // If the new element has not been added yet, apend it to the end of the list
+		details.appendChild(neuronListing)
+	}
+	
+	checkWeights() // Manages weight placement
+	
 }
 
 function remNeuronListing(col,row) { // Remove a Neuron Listing from the Details div
-	console.log('Rem')
 	
 	details = document.getElementById('details')
 	
@@ -451,14 +493,111 @@ function remNeuronListing(col,row) { // Remove a Neuron Listing from the Details
 			details.removeChild(details.childNodes[i])
 		}
 	}
+	
+	checkWeights() // Manages weight placement
 }
 
-function addWeightListing() {
+function checkWeights() { // Detects when adding a Weight Listing should be added to the Display Div
+
+	details = document.getElementById('details')
+	
+	layerData = networks[selectedNet].canvasData.layerData
+	
+	listedWeights = []
+	
+	for(var i = 0; i < details.childNodes.length; i++) {
+		
+		try {
+			
+			id = details.childNodes[i].id.split(' ')
+			
+		} catch(err) {
+			
+			id = []
+			
+		}
+		
+		if(id.length == 4) {
+			
+			listedWeights.push(id)
+			
+		}
+		
+	}
+	
+	for(var i = 0; i < layerData.length-1; i++) {
+		
+		if(layerData[i][5] > -1) {
+			
+			if(layerData[i+1][5] > -1) {
+				
+				listingExists = false
+				
+				for(var j = 0; j < listedWeights.length; j++) {
+					
+					if(listedWeights[j][0] == i && listedWeights[j][2] == i+1) {
+						
+						listingExists = true
+						
+					}
+					
+				}
+				
+				if(!listingExists) {
+					
+					addWeightListing(i,layerData[i][5],i+1,layerData[i+1][5])
+					
+				}
+				
+			}
+			
+		}
+		
+	}
+	
+	for(var i = 0; i < listedWeights.length; i++) {
+		
+		for(var j = 0; j < layerData.length; i++) {
+			
+			
+			
+		}
+		
+	}
 	
 }
 
-function remWeightListing() {
+function addWeightListing(iniCol,iniRow,endCol,endRow) { // Add a Weight Listing the the Details div
 	
+	details = document.getElementById('details')
+	
+	weightListing = document.createElement("div")   // Initialise The 'weightListing' Element
+	weightListing.classList.add("weightListing")
+	
+	weightDisplay = document.createElement("div")   // Initialise The weight display box
+	weightDisplay.classList.add("weightDisplay")
+	
+	// neuronCanvas = document.createElement("Canvas")
+	// neuronCanvas.classList.add("neuronCanvas")
+	
+	// weightDisplay.appendChild(weightCanvas)  // Append the neuron canvas to the display box
+	weightListing.appendChild(weightDisplay)    // Append the display box to the neuron listing
+	
+	weightListing.id = iniCol + ' ' + iniRow + ' ' + endCol + ' ' + endRow
+	weightListing.innerHTML += iniCol + ' ' + iniRow + ' ' + endCol + ' ' + endRow
+	
+	details.appendChild(weightListing)
+}
+
+function remWeightListing(iniCol,iniRow,endCol,endRow) { // Remove a Weight Listing from the Details div
+	
+	details = document.getElementById('details')
+	
+	for(var i = 0; i < details.childNodes.length; i++) {
+		if(details.childNodes[i].id == iniCol + ' ' + iniRow + ' ' + endCol + ' ' + endRow) {
+			details.removeChild(details.childNodes[i])
+		}
+	}
 }
 
 function canvasScroll(event) { //Event listener for canvas scrolling
@@ -568,7 +707,7 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 	net.canvasData.layerData[0][2] = -document.getElementById('canvasScroll').value
 	
 	//				0						1							2							3							4
-	// cols[Neurons in layer i, heightDiv for this layer, Scroll value for this layer, number of Neurons displayable, First displayable Neuron]
+	// LData[Neurons in layer i, heightDiv for this layer, Scroll value for this layer, number of Neurons displayable, First displayable Neuron]
 	for(var i = 0; i < net.canvasData.layerData.length; i++) {
 		if(net.layers[i].length*heightDiv < canvasHeight) {
 			net.canvasData.layerData[i][0] = net.layers[i].length
