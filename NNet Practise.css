@@ -373,6 +373,8 @@ div {
 	width: 100%;
 	position: relative;
 	z-index: -1;
+	box-sizing: border-box;
+	border-bottom: 1px solid black;
 }
 
 #newNet {
@@ -421,7 +423,6 @@ div {
 	height: 0%;
 	width: 100%;
 	animation: fadeout 1s;
-	transition: all 1s ease-out;
 }
 
 .neuronDisplay {

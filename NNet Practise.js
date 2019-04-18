@@ -98,6 +98,7 @@ function draw() { //P5js loops this function 60 times per second (as defined by 
 		drawNet(networks[selectedNet])
 	}
 	
+	// Surely this can go somewhere else
 	for(var i = 0; i < networks[selectedNet].layers[networks[selectedNet].layers.length-1].length; i++) {
 		document.getElementById('result' + i).style.height = networks[selectedNet].layers[networks[selectedNet].layers.length-1][i][0][1]*100 + "%"
 		if(i === input) {
@@ -119,26 +120,7 @@ function draw() { //P5js loops this function 60 times per second (as defined by 
 	count = count/networks[selectedNet].lastCorrects.length
 	document.getElementById('error').innerHTML = (count*100).toFixed(1) + '%'
 	
-	graphCanvasCTX.clearRect(0, 0, graphCanvas.width, graphCanvas.height)
-	for(var i = 0; i < graphCanvas.width; i++) {
-		if(i > graphCanvas.width) {
-			break;
-		} else {
-			if(networks[selectedNet].lastCorrects[i] === 1) {
-				graphCanvasCTX.strokeStyle = "#00d2ff"
-			} else if(networks[selectedNet].lastCorrects[i] === 0) {
-				graphCanvasCTX.strokeStyle = "#008cff"
-			} else {
-				graphCanvasCTX.strokeStyle = "#000000"
-			}
-			graphCanvasCTX.beginPath()
-			graphCanvasCTX.imageSmoothingEnabled = false
-			graphCanvasCTX.moveTo(i+1.5,0)
-			graphCanvasCTX.lineTo(i+1.5,graphCanvas.height)
-			graphCanvasCTX.stroke()
-			graphCanvasCTX.closePath()
-		}
-	}
+	drawGraphCanvas()
 	
 	turboAdjust()
 }
@@ -312,14 +294,12 @@ function deleteNet() { //Deletes Networks, attached to 'Delete Network' Button
 }
 
 function windowResized() { //Resizes Canvas upon change in window size
-	resizeCanvas(document.getElementById('canvasHolder').clientWidth, document.getElementById('canvasHolder').clientHeight)
 	
-	for(var i = 0; i < networks[selectedNet].layer.length; i++) {
-		networks[selectedNet].layer[i].displayOffset = 0
-	}
+	resizeCanvas(document.getElementById('canvasHolder').clientWidth, document.getElementById('canvasHolder').clientHeight)
 	
 	graphCanvas.width = document.getElementById('errorCount').clientWidth
 	graphCanvas.height = document.getElementById('errorCount').clientHeight
+	
 }
 
 function netFunction() { //Manages the function of the active Network
@@ -490,13 +470,20 @@ function remNeuronListing(col,row) { // Remove a Neuron Listing from the Details
 	
 	for(var i = 0; i < details.childNodes.length; i++) {
 		if(details.childNodes[i].id == col + ' ' + row) {
-			details.childNodes[i].style.animation = 'fadeout 1s'
-			removeTarget = details.childNodes[i]
-			removeTarget.parentNode.removeChild(removeTarget)
 			
 			temp = document.createElement('div')
+			temp.classList.add('neuronListing')
 			temp.classList.add('ghostListing')
+			temp.innerHTML = details.childNodes[i].innerHTML
+			temp.style.borderBottom = 'black solid 0px'
+			
+			details.removeChild(details.childNodes[i])
 			details.insertBefore(temp,details.childNodes[i])
+			
+			setTimeout(function() {
+				elem = document.getElementsByClassName('ghostListing')[0]
+				document.getElementById('details').removeChild(elem)
+			},1000)
 		}
 	}
 	
@@ -623,13 +610,20 @@ function remWeightListing(iniCol,iniRow,endCol,endRow) { // Remove a Weight List
 	
 	for(var i = 0; i < details.childNodes.length; i++) {
 		if(details.childNodes[i].id == iniCol + ' ' + iniRow + ' ' + endCol + ' ' + endRow) {
-			details.childNodes[i].style.animation = 'fadeout 1s'
-			removeTarget = details.childNodes[i]
-			removeTarget.parentNode.removeChild(removeTarget)
 			
 			temp = document.createElement('div')
+			temp.classList.add('weightListing')
 			temp.classList.add('ghostListing')
+			temp.innerHTML = details.childNodes[i].innerHTML
+			temp.style.borderBottom = 'black solid 0px'
+			
+			details.removeChild(details.childNodes[i])
 			details.insertBefore(temp,details.childNodes[i])
+			
+			setTimeout(function() {
+				elem = document.getElementsByClassName('ghostListing')[0]
+				document.getElementById('details').removeChild(elem)
+			},1000)
 		}
 	}
 }
@@ -719,12 +713,40 @@ function MNISTParse(number) { //Generates some of the required Input data for MN
 	lastInputs.push(number)
 }
 
+function drawGraphCanvas() {
+	
+	graphCanvasCTX.clearRect(0, 0, graphCanvas.width, graphCanvas.height)
+	for(var i = 0; i < graphCanvas.width; i++) {
+		if(i > graphCanvas.width) {
+			break;
+		} else {
+			if(networks[selectedNet].lastCorrects[i] === 1) {
+				graphCanvasCTX.strokeStyle = "#00d2ff"
+			} else if(networks[selectedNet].lastCorrects[i] === 0) {
+				graphCanvasCTX.strokeStyle = "#008cff"
+			} else {
+				graphCanvasCTX.strokeStyle = "#000000"
+			}
+			graphCanvasCTX.beginPath()
+			graphCanvasCTX.imageSmoothingEnabled = false
+			graphCanvasCTX.moveTo(i+1.5,0)
+			graphCanvasCTX.lineTo(i+1.5,graphCanvas.height)
+			graphCanvasCTX.stroke()
+			graphCanvasCTX.closePath()
+		}
+	}
+	
+}
+
 function drawNet(net) { //Renders the active Network with the help of P5js
 	
 	// p5js Canvas only draws weights, not Neurons!!
 	
 	// Needs to avoid rendering elements that are off canvas to save processing
 	// Needs to scale and scroll both horizontally and vertically
+	
+	canvasHeight = document.getElementById('canvasHolder').clientHeight
+	canvasWidth = document.getElementById('canvasHolder').clientWidth
 	
 	nodeRadius = canvasHeight/((15)*3)
 	
