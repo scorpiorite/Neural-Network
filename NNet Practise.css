@@ -407,7 +407,6 @@ div {
 	background-color: green;
 	border-bottom: black solid 1px;
 	animation: fadein 1s;
-	transition: all 0.4s ease-out;
 }
 
 .weightListing {
@@ -416,7 +415,6 @@ div {
 	background-color: pink;
 	border-bottom: black solid 1px;
 	animation: fadein 1s;
-	transition: all 1s ease-out;
 }
 
 .ghostListing {
