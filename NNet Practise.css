@@ -95,16 +95,27 @@ div {
 	box-sizing: border-box;
 }
 
+#buttonHolder {
+	height: 10%;
+	width: 100%;
+	background-color: red;
+	position: relative;
+	float: left;
+	margin: 0;
+	border-bottom: 0.1vh solid black;
+	
+}
+
 .buttonStretch {
 	width: calc(100%/3);
-	height: 10%;
+	height: 100%;
 	float: left;
 	background-color: silver;
 	position: relative;
 	box-sizing: border-box;
 	border-top: 0.1vh solid black;
-	border-bottom: 0.1vh solid black;
 	border-right: 0.1vh solid black;
+	margin: 0;
 }
 
 #turboToggle {
@@ -121,15 +132,6 @@ div {
 	float: right;
 }
 
-.slideContainer {
-	width: 100%;
-	height: 25%;
-	margin: 0;
-	border: 0;
-	box-sizing: border-box;
-	position: relative;
-}
-
 .slider {
 	-webkit-appearance: none;  /* Override default CSS styles */
 	appearance: none;
@@ -137,26 +139,25 @@ div {
 	height: 25%; /* Specified height */
 	background: #d3d3d3; /* Grey background */
 	outline: none; /* Remove outline */
-	opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
 	-webkit-transition: .2s; /* 0.2 seconds transition on hover */
 	transition: opacity .2s;
 	margin: 0;
-	border: 0;
 	box-sizing: border-box;
 	position: relative;
+	float: left;
+	/* bottom: 0.2vh; */
 }
 
 .slider::-webkit-slider-thumb {
 	-webkit-appearance: none; /* Override default look */
 	appearance: none;
 	width: 25px; /* Set a specific slider handle width */
-	height: 0.85vh; /* Slider handle height */
-	background: blue; /* Green background */
+	height: 1.2vh; /* Slider handle height */
+	background: blue; /* Blue background */
 	cursor: pointer; /* Cursor on hover */
 	margin: 0;
-	box-sizing: border-box;
+	/* box-sizing: border-box; */
 	position: relative;
-	bottom: 0.2vh;
 }
 
 .slideContainerVert {
@@ -374,7 +375,8 @@ div {
 	position: relative;
 	z-index: -1;
 	box-sizing: border-box;
-	border-bottom: 1px solid black;
+	/* border-bottom: 1px solid black; */
+	margin: 0;
 }
 
 #newNet {
@@ -401,6 +403,18 @@ div {
 	width: 100%;
 	float: left;
 	overflow: auto;
+}
+
+.details::-webkit-scrollbar {
+	width: 20px;
+}
+
+.details::-webkit-scrollbar-track {
+	background-color: grey;
+}
+
+.details::-webkit-scrollbar-thumb {
+	background-color: lightblue;
 }
 
 .neuronListing {
