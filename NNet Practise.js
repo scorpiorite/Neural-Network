@@ -32,6 +32,7 @@ var savedNets
 var benchThis = 0
 var benchLast = 0
 var benchDiff = 0
+var scrollMode = 0
 
 function setup() { //P5js calls this function on start-up
 	
@@ -630,8 +631,11 @@ function remWeightListing(iniCol,iniRow,endCol,endRow) { // Remove a Weight List
 
 function canvasScroll(event) { //Event listener for canvas scrolling
 	
-	SDY = (Math.abs(event.deltaY)/event.deltaY)*8 // Scroll Delta Y
-	//SDY = -event.deltaY
+	if(scrollMode == 0) {
+		SDY = -event.deltaY
+	} else {
+		SDY = (Math.abs(event.deltaY)/event.deltaY)*8
+	}
 	
 	for(var i = 0; i < networks[selectedNet].layers.length; i++) {
 		if(mouseX > networks[selectedNet].canvasData.widthDiv/2 + networks[selectedNet].canvasData.widthDiv*i - nodeRadius && mouseX < networks[selectedNet].canvasData.widthDiv/2 + networks[selectedNet].canvasData.widthDiv*i + nodeRadius) {
