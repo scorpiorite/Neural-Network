@@ -463,6 +463,34 @@ div {
 	background-color: purple;
 }
 
+.weightSlider {
+	-webkit-appearance: none;  /* Override default CSS styles */
+	appearance: none;
+	width: calc(100% - 6.75vh - 1px); /* Full-width */
+	height: 25%; /* Specified height */
+	background: #d3d3d3; /* Grey background */
+	outline: none; /* Remove outline */
+	-webkit-transition: .2s; /* 0.2 seconds transition on hover */
+	transition: opacity .2s;
+	margin: 0;
+	box-sizing: border-box;
+	position: relative;
+	float: left;
+	/* bottom: 0.2vh; */
+}
+
+.weightSlider::-webkit-slider-thumb {
+	-webkit-appearance: none; /* Override default look */
+	appearance: none;
+	width: 25px; /* Set a specific slider handle width */
+	height: 1.2vh; /* Slider handle height */
+	background: blue; /* Blue background */
+	cursor: pointer; /* Cursor on hover */
+	margin: 0;
+	/* box-sizing: border-box; */
+	position: relative;
+}
+
 @keyframes fadein {
     from {
         opacity: 0;
