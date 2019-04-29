@@ -425,6 +425,7 @@ function addNeuronListing(col,row) { // Add a Neuron Listing to the Details div
 	
 	neuronCanvas = document.createElement("Canvas") // Initialise the Neuron rendering canvas
 	neuronCanvas.classList.add("neuronCanvas")
+	neuronCanvas.id = 'c ' + col + ' ' + row
 	
 	neuronDisplay.appendChild(neuronCanvas)  // Append the neuron canvas to the display box
 	neuronListing.appendChild(neuronDisplay) // Append the display box to the neuron listing
@@ -567,11 +568,12 @@ function addWeightListing(iniCol,iniRow,endCol,endRow) { // Add a Weight Listing
 	weightDisplay = document.createElement("div")   // Initialise The weight display box
 	weightDisplay.classList.add("weightDisplay")
 	
-	// neuronCanvas = document.createElement("Canvas")
-	// neuronCanvas.classList.add("neuronCanvas")
+	weightCanvas = document.createElement("Canvas") // Initialise The weight Canvas
+	weightCanvas.classList.add("weightCanvas")
+	weightCanvas.id = 'c ' + iniCol + ' ' + iniRow + ' ' + endCol + ' ' + endRow
 	
-	// weightDisplay.appendChild(weightCanvas)  // Append the neuron canvas to the display box
-	weightListing.appendChild(weightDisplay)    // Append the display box to the neuron listing
+	weightDisplay.appendChild(weightCanvas)  // Append the weight canvas to the display box
+	weightListing.appendChild(weightDisplay) // Append the display box to the neuron listing
 	
 	weightListing.id = iniCol + ' ' + iniRow + ' ' + endCol + ' ' + endRow
 	weightListing.innerHTML += iniCol + ' ' + iniRow + ' ' + endCol + ' ' + endRow
@@ -637,7 +639,7 @@ function canvasScroll(event) { //Event listener for canvas scrolling
 		SDY = (Math.abs(event.deltaY)/event.deltaY)*8
 	}
 	
-	for(var i = 0; i < networks[selectedNet].layers.length; i++) {
+	for(var i = 0; i < networks[selectedNet].layers.length; i++) { // WTF
 		if(mouseX > networks[selectedNet].canvasData.widthDiv/2 + networks[selectedNet].canvasData.widthDiv*i - nodeRadius && mouseX < networks[selectedNet].canvasData.widthDiv/2 + networks[selectedNet].canvasData.widthDiv*i + nodeRadius) {
 			if(-networks[selectedNet].canvasData.layerData[i][2] - SDY < networks[selectedNet].canvasData.layerData[i][1]*(networks[selectedNet].canvasData.layerData[i][0] - networks[selectedNet].canvasData.layerData[i][3]) == false) {
 				networks[selectedNet].canvasData.layerData[i][2] = -networks[selectedNet].canvasData.layerData[i][1]*(networks[selectedNet].canvasData.layerData[i][0] - networks[selectedNet].canvasData.layerData[i][3])
@@ -702,12 +704,6 @@ function MNISTParse(number) { //Generates some of the required Input data for MN
 		}
 	}
 	
-	// for(var i = 0; i < networks[selectedNet].layer[networks[selectedNet].layer.length-1].neuron.length; i++) {
-		// if(maxValue < networks[selectedNet].layer[networks[selectedNet].layer.length-1].neuron[i].activation) {
-			// maxValue = networks[selectedNet].layer[networks[selectedNet].layer.length-1].neuron[i].activation
-			// maxIndex = i
-		// }
-	// }
 	if(maxIndex === number) {
 		networks[selectedNet].lastCorrects.unshift(1)
 	} else {
