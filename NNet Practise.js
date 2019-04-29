@@ -324,16 +324,16 @@ function turboAdjust() { //Adjusts the Turbo slider according to benchmarked per
 	benchThis = new Date()
 	benchDiff = benchThis - benchLast
 	if(turbo === true && learn === true) {
-		if(benchDiff > 17) { //Maybe turboBuffer *= 1.1?? - Needs negative management
-			turboBuffer--
+		if(benchDiff > 17) {
+			turboBuffer -= Math.round(Math.E**(0.06*benchDiff)-Math.E**(17*0.06)+1) // Could be better
 		} else {
-			turboBuffer++
+			turboBuffer += Math.floor(1.7*Math.log(benchDiff)+1.7*Math.log(17)+1)   // Amazing
 		}
 		sliderTemp = document.getElementById('turboSlider').value
-		if(turboBuffer > 5) {
+		if(turboBuffer > 10) {
 			sliderTemp++
 			turboBuffer = 0
-		} else if(turboBuffer < -5) {
+		} else if(turboBuffer < -10) {
 			sliderTemp--
 			turboBuffer = 0
 		}
@@ -356,7 +356,7 @@ function turboToggle() { //Manages TurboMode, attached to 'Turbo' Button
 		turboBuffer = 0
 		//render = 0
 		
-		turboLoop()
+		//turboLoop()
 	}
 }
 
