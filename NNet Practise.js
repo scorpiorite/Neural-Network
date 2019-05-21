@@ -1,5 +1,6 @@
 
 // Please forgive me for my sins
+// OMG Clean this at some point... 95% of these are unnecessary now
 var networks = []
 var canvasHeight = 0
 var canvasWidth = 0
@@ -833,6 +834,22 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 			}
 		}
 	}
+	
+	var listingArray = []
+	for(var i = 0; i < document.getElementById('details').childNodes.length; i++) {
+		try {
+			listingArray.push(document.getElementById('details').childNodes[i].childNodes[0].childNodes[0])
+		} catch {}
+	}
+	for(var i = 0; i < listingArray.length; i++) {
+		try {
+			var context = listingArray[i].getContext('2d')
+			context.moveTo(0,20)
+			context.lineTo(200,20)
+			context.stroke()
+		} catch {}
+	}
+	
 }
 
 function drawNode(x,y,content,selected) { //Renders Neurons on the canvas (part of 'drawNet')
