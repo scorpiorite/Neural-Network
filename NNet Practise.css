@@ -465,6 +465,12 @@ div {
 	background-color: purple;
 }
 
+.weightCanvas {
+	width: 100%;
+	height: 100%;
+	background-color: lightblue;
+}
+
 .weightSlider {
 	-webkit-appearance: none;  /* Override default CSS styles */
 	appearance: none;
