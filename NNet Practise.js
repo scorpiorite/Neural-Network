@@ -844,9 +844,7 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 	for(var i = 0; i < listingArray.length; i++) {
 		try {
 			var context = listingArray[i].getContext('2d')
-			context.moveTo(0,20)
-			context.lineTo(200,20)
-			context.stroke()
+			context.putImageData(document.getElementById('defaultCanvas0').getImageData(),0,0) // hmmmm
 		} catch {}
 	}
 	
