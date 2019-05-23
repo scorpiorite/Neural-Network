@@ -429,6 +429,8 @@ function addNeuronListing(col,row) { // Add a Neuron Listing to the Details div
 	neuronCanvas = document.createElement("Canvas") // Initialise the Neuron rendering canvas
 	neuronCanvas.classList.add("neuronCanvas")
 	neuronCanvas.id = 'c ' + col + ' ' + row
+	neuronCanvas.height = window.innerHeight*(6.75/100)
+	neuronCanvas.width = window.innerHeight*(6.75/100)
 	
 	neuronDisplay.appendChild(neuronCanvas)  // Append the neuron canvas to the display box
 	neuronListing.appendChild(neuronDisplay) // Append the display box to the neuron listing
@@ -574,6 +576,8 @@ function addWeightListing(iniCol,iniRow,endCol,endRow) { // Add a Weight Listing
 	weightCanvas = document.createElement("Canvas") // Initialise The weight Canvas
 	weightCanvas.classList.add("weightCanvas")
 	weightCanvas.id = 'c ' + iniCol + ' ' + iniRow + ' ' + endCol + ' ' + endRow
+	weightCanvas.height = window.innerHeight*(6.75/100)
+	weightCanvas.width = window.innerHeight*(6.75/100)
 	
 	weightDisplay.appendChild(weightCanvas)  // Append the weight canvas to the display box
 	weightListing.appendChild(weightDisplay) // Append the display box to the neuron listing
@@ -844,21 +848,21 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 		} catch {}
 	}
 	for(var i = 0; i < listingArray.length; i++) {
-		try {
 			var context = listingArray[i].getContext('2d')
 			var unPack = listingArray[i].id.split(' ')
 			var listingHeight = listingArray[i].height
 			var listingWidth = listingArray[i].width
 			if(unPack.length == 3) {
 				var content = net.layers[unPack[1]][unPack[2]][0][1]
+				context.clearRect(0,0,listingWidth,listingHeight)
+				context.beginPath()
 				//context.strokeWeight(2)
 				//context.stroke(255,200,200)
-				context.arc(listingWidth/2,listingHeight/2,nodeRadius*2,nodeRadius*2,PI + HALF_PI + content*2*PI,PI + HALF_PI)
+				context.arc(listingWidth/2,listingHeight/2,nodeRadius,PI + HALF_PI + content*2*PI,PI + HALF_PI)
 				//context.stroke(255,0,0)
-				context.arc(listingWidth/2,listingHeight/2,nodeRadius*2,nodeRadius*2,PI + HALF_PI,PI + HALF_PI + content*2*PI)
+				context.arc(listingWidth/2,listingHeight/2,nodeRadius,PI + HALF_PI,PI + HALF_PI + content*2*PI)
 				context.stroke()
 			}
-		} catch {}
 	}
 	
 }
