@@ -553,7 +553,8 @@ function checkWeights() { // Detects when adding a Weight Listing should be adde
 	
 	for(var i = 0; i < listedWeights.length; i++) { // For all weight listings
 		
-		if(layerData[listedWeights[i][0]][5] > -1 && layerData[listedWeights[i][2]][5] > -1) {} else { // If there is no selected neuron in either column corresponding to the weight listing:
+		// if(!(layerData[listedWeights[i][0]][5] > -1 && layerData[listedWeights[i][2]][5] > -1)) { // If there is no selected neuron in either column corresponding to the weight listing:
+		if(!(layerData[listedWeights[i][0]][5] == listedWeights[i][1] && layerData[listedWeights[i][2]][5] == listedWeights[i][3])) { // If there is no selected neuron in either column corresponding to the weight listing:
 			
 			remWeightListing(listedWeights[i][0],listedWeights[i][1],listedWeights[i][2],listedWeights[i][3]) // Remove the weight listing
 			
@@ -636,6 +637,8 @@ function remWeightListing(iniCol,iniRow,endCol,endRow) { // Remove a Weight List
 			},1000)
 		}
 	}
+	
+	checkWeights()
 }
 
 function canvasScroll(event) { //Event listener for canvas scrolling
@@ -857,9 +860,14 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 				context.clearRect(0,0,listingWidth,listingHeight)
 				context.beginPath()
 				//context.strokeWeight(2)
+				context.lineWidth = 2
 				//context.stroke(255,200,200)
+				context.strokeStyle = "#FFC8C8"
 				context.arc(listingWidth/2,listingHeight/2,nodeRadius,PI + HALF_PI + content*2*PI,PI + HALF_PI)
+				context.stroke()
+				context.beginPath()
 				//context.stroke(255,0,0)
+				context.strokeStyle = "#FF0000"
 				context.arc(listingWidth/2,listingHeight/2,nodeRadius,PI + HALF_PI,PI + HALF_PI + content*2*PI)
 				context.stroke()
 			}
