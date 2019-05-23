@@ -84,6 +84,8 @@ function setup() { //P5js calls this function on start-up
 	loadNets()
 	
 	stop()
+	
+	netFunction()
 }
 
 function draw() { //P5js loops this function 60 times per second (as defined by 'frameRate()')
@@ -844,7 +846,18 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 	for(var i = 0; i < listingArray.length; i++) {
 		try {
 			var context = listingArray[i].getContext('2d')
-			context.putImageData(document.getElementById('defaultCanvas0').getImageData(),0,0) // hmmmm
+			var unPack = listingArray[i].id.split(' ')
+			var listingHeight = listingArray[i].height
+			var listingWidth = listingArray[i].width
+			if(unPack.length == 3) {
+				var content = net.layers[unPack[1]][unPack[2]][0][1]
+				//context.strokeWeight(2)
+				//context.stroke(255,200,200)
+				context.arc(listingWidth/2,listingHeight/2,nodeRadius*2,nodeRadius*2,PI + HALF_PI + content*2*PI,PI + HALF_PI)
+				//context.stroke(255,0,0)
+				context.arc(listingWidth/2,listingHeight/2,nodeRadius*2,nodeRadius*2,PI + HALF_PI,PI + HALF_PI + content*2*PI)
+				context.stroke()
+			}
 		} catch {}
 	}
 	
