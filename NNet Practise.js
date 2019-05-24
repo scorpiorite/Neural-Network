@@ -848,31 +848,67 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 	for(var i = 0; i < document.getElementById('details').childNodes.length; i++) {
 		try {
 			listingArray.push(document.getElementById('details').childNodes[i].childNodes[0].childNodes[0])
-		} catch {}
+		} catch {/*please don't judge me*/}
 	}
 	for(var i = 0; i < listingArray.length; i++) {
-			var context = listingArray[i].getContext('2d')
-			var unPack = listingArray[i].id.split(' ')
-			var listingHeight = listingArray[i].height
-			var listingWidth = listingArray[i].width
-			if(unPack.length == 3) {
+		var context = listingArray[i].getContext('2d')
+		var unPack = listingArray[i].id.split(' ')
+		var listingHeight = listingArray[i].height
+		var listingWidth = listingArray[i].width
+		if(unPack.length == 3) {
+			
+			if (unPack[1] == 0) {
+				var content = net.layers[unPack[1]][unPack[2]]
+			} else {
 				var content = net.layers[unPack[1]][unPack[2]][0][1]
-				context.clearRect(0,0,listingWidth,listingHeight)
-				context.beginPath()
-				//context.strokeWeight(2)
-				context.lineWidth = 2
-				//context.stroke(255,200,200)
-				context.strokeStyle = "#FFC8C8"
-				context.arc(listingWidth/2,listingHeight/2,nodeRadius,PI + HALF_PI + content*2*PI,PI + HALF_PI)
-				context.stroke()
-				context.beginPath()
-				//context.stroke(255,0,0)
-				context.strokeStyle = "#FF0000"
-				context.arc(listingWidth/2,listingHeight/2,nodeRadius,PI + HALF_PI,PI + HALF_PI + content*2*PI)
-				context.stroke()
 			}
+			
+			context.clearRect(0,0,listingWidth,listingHeight)
+			context.lineWidth = 2
+			
+			try {
+				if(listingArray[i-1].id.split(' ').length == 5) {
+					context.beginPath()
+					context.moveTo(listingWidth/2,0)
+					context.lineTo(listingWidth/2,listingHeight/2 - nodeRadius)
+					context.stroke()
+				}
+			} catch {}
+			try {
+				if(listingArray[i+1].id.split(' ').length == 5) {
+					context.beginPath()
+					context.moveTo(listingWidth/2,listingHeight)
+					context.lineTo(listingWidth/2,listingHeight/2 + nodeRadius)
+					context.stroke()
+				}
+			} catch {}
+			
+			context.beginPath()
+			context.strokeStyle = "#FFC8C8"
+			context.arc(listingWidth/2,listingHeight/2,nodeRadius,PI + HALF_PI + content*2*PI,PI + HALF_PI)
+			context.stroke()
+			
+			context.beginPath()
+			context.strokeStyle = "#FF0000"
+			context.arc(listingWidth/2,listingHeight/2,nodeRadius,PI + HALF_PI,PI + HALF_PI + content*2*PI)
+			context.stroke()
+			
+			context.font = nodeRadius + "px Arial"
+			context.fillText(content.toFixed(2),listingWidth/5,listingHeight/2 + nodeRadius/3)
+			
+		} else if (unPack.length == 5) {
+			
+			context.clearRect(0,0,listingWidth,listingHeight)
+			context.strokeStyle = "#FF0000"
+			context.lineWidth = 2
+			
+			context.beginPath()
+			context.moveTo(listingWidth/2,0)
+			context.lineTo(listingWidth/2,listingHeight)
+			context.stroke()
+			
+		}
 	}
-	
 }
 
 function drawNode(x,y,content,selected) { //Renders Neurons on the canvas (part of 'drawNet')
