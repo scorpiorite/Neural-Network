@@ -353,7 +353,7 @@ div {
 	height: 5vh;
 	background-color: silver;
 	z-index: 5;
-	transition: height 2s;
+	transition: height 1s;
 	overflow: hidden;
 }
 
@@ -366,7 +366,74 @@ div {
 	margin: 0;
 	height: 5vh;
 	width: 100%;
-	background-color: green;
+	/* background-color: green; */
+	/* box-sizing: border-box; */
+	/* border-bottom: 1px solid black; */
+}
+
+.checkContainer {
+	/* height: 100%; */
+	/* width: 50%; */
+	float: right;
+	padding-right: 1vh;
+	padding-top: 0.5vh;
+	/* background-color: pink; */
+}
+
+/* The switch - the box around the slider */
+.switch {
+	position: relative;
+	display: inline-block;
+	width: 10vh;
+	height: 4vh;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+/* The slider */
+.check {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #ccc;
+	-webkit-transition: .4s;
+	transition: .4s;
+	border-radius: 4vh;
+}
+
+.check:before {
+	position: absolute;
+	content: "";
+	height: 3vh;
+	width: 3vh;
+	left: 0.5vh;
+	bottom: 0.5vh;
+	background-color: white;
+	-webkit-transition: .4s;
+	transition: .4s;
+	border-radius: 50%;
+}
+
+input:checked + .check {
+	background-color: #2196F3;
+}
+
+input:focus + .check {
+	box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .check:before {
+	-webkit-transform: translateX(5vh);
+	-ms-transform: translateX(5vh);
+	transform: translateX(6vh);
 }
 
 #description {
@@ -517,6 +584,7 @@ div {
 		height: 0%;
 	}
 }
+
 
 #temp {
 	
