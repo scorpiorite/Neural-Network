@@ -110,7 +110,7 @@ function draw() { //P5js loops this function 60 times per second (as defined by 
 			document.getElementById('resultHeader' + i).style.background = 'darkgrey'
 		} else {
 			document.getElementById('resultHeader' + i).style.color = 'black'
-			document.getElementById('resultHeader' + i).style.background = 'lightgrey'
+			document.getElementById('resultHeader' + i).style.background = '#e3e3e3'
 		}
 	}
 	
@@ -884,12 +884,14 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 			} catch {}
 			
 			context.beginPath()
-			context.strokeStyle = "#FFC8C8"
+			// context.strokeStyle = "#FFC8C8"
+			context.strokeStyle = "#ffafaf"
 			context.arc(listingWidth/2,listingHeight/2,nodeRadius,PI + HALF_PI + content*2*PI,PI + HALF_PI)
 			context.stroke()
 			
 			context.beginPath()
 			context.strokeStyle = "#FF0000"
+			// context.strokeStyle = "#00FF00"
 			context.arc(listingWidth/2,listingHeight/2,nodeRadius,PI + HALF_PI,PI + HALF_PI + content*2*PI)
 			context.stroke()
 			
@@ -900,6 +902,7 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 			
 			context.clearRect(0,0,listingWidth,listingHeight)
 			context.strokeStyle = "#FF0000"
+			// context.strokeStyle = "#00FF00"
 			context.lineWidth = 2
 			
 			context.beginPath()
@@ -945,6 +948,7 @@ function drawNode(x,y,content,selected) { //Renders Neurons on the canvas (part 
 			strokeWeight(2)
 			stroke(255,200,200)
 			arc(x,y,nodeRadius*2,nodeRadius*2,PI + HALF_PI + content*2*PI,PI + HALF_PI)
+			// stroke(0,255,0)
 			stroke(255,0,0)
 			arc(x,y,nodeRadius*2,nodeRadius*2,PI + HALF_PI,PI + HALF_PI + content*2*PI)
 		}
