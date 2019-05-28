@@ -1,4 +1,7 @@
 
+// TODO:
+// - Add a proper options menu
+
 // Please forgive me for my sins
 // OMG Clean this at some point... 95% of these are unnecessary now
 var networks = []
@@ -81,7 +84,7 @@ function setup() { //P5js calls this function on start-up
 	//networks.push(parseNetwork(testNetString))
 	networks.push(new network_matrix("test_matrix",[784,18,18,10]))
 	
-	loadNets()
+	//loadNets()
 	
 	stop()
 	
