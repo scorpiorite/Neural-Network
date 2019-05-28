@@ -132,6 +132,14 @@ function draw() { //P5js loops this function 60 times per second (as defined by 
 	turboAdjust()
 }
 
+function toggleRender() {
+	if(render == 1) {
+		render = 0
+	} else if(render == 0) {
+		render = 1
+	}
+}
+
 function netTemp(x) {
 	networks[x].layers[1][0][1][1] = 0.15
 	networks[x].layers[1][0][1][2] = 0.2
