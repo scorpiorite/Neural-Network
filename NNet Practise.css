@@ -351,7 +351,7 @@ div {
 
 .dropContent {
 	height: 5vh;
-	background-color: silver;
+	background-color: rgba(192,192,192,0.7);
 	z-index: 5;
 	transition: height 1s;
 	overflow: hidden;
@@ -403,7 +403,7 @@ div {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color: #ccc;
+	background-color: lightblue;
 	-webkit-transition: .4s;
 	transition: .4s;
 	border-radius: 4vh;
@@ -427,7 +427,7 @@ input:checked + .check {
 }
 
 input:focus + .check {
-	box-shadow: 0 0 1px #2196F3;
+	/* box-shadow: 0 0 1px #2196F3; */
 }
 
 input:checked + .check:before {

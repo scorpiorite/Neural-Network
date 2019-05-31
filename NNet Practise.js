@@ -140,6 +140,15 @@ function toggleRender() {
 	}
 }
 
+function toggleRenderMode() {
+	
+	if (networks[selectedNet].canvasData.renderMode == 1) {
+		networks[selectedNet].canvasData.renderMode = 0
+	} else {
+		networks[selectedNet].canvasData.renderMode = 1
+	}
+}
+
 function netTemp(x) {
 	networks[x].layers[1][0][1][1] = 0.15
 	networks[x].layers[1][0][1][2] = 0.2
@@ -855,6 +864,63 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 		}
 	}
 	
+	updateListings(net)
+}
+
+function drawNode(x,y,content,selected) { //Renders Neurons on the canvas (part of 'drawNet')
+	
+	colorMode(RGB)
+	strokeWeight(1)
+	
+	if(selected === true) {
+		fill("pink")
+	} else {
+		fill(255,255,255)
+	}
+	
+	noFill()
+	
+	if(selected == false) {
+		if(content == 0) {
+			strokeWeight(2)
+			stroke(119,187,221)
+			ellipse(x,y,nodeRadius*2,nodeRadius*2)
+		} else {
+			strokeWeight(2)
+			stroke(119,187,221)
+			arc(x,y,nodeRadius*2,nodeRadius*2,PI + HALF_PI + content*2*PI,PI + HALF_PI)
+			stroke(0,255,255)
+			arc(x,y,nodeRadius*2,nodeRadius*2,PI + HALF_PI,PI + HALF_PI + content*2*PI)
+		}
+	} else {
+		if(content == 0) {
+			strokeWeight(2)
+			stroke(119,187,221)
+			ellipse(x,y,nodeRadius*2,nodeRadius*2)
+		} else {
+			strokeWeight(2)
+			stroke(255,200,200)
+			arc(x,y,nodeRadius*2,nodeRadius*2,PI + HALF_PI + content*2*PI,PI + HALF_PI)
+			// stroke(0,255,0)
+			stroke(255,0,0)
+			arc(x,y,nodeRadius*2,nodeRadius*2,PI + HALF_PI,PI + HALF_PI + content*2*PI)
+		}
+	}
+	
+	strokeWeight(1)
+	stroke(255)
+	fill(0)
+	textSize(nodeRadius)
+	textAlign(CENTER,CENTER)
+	try {
+		text(content.toFixed(2),x,y)
+	} catch(err) {
+		text(0,x,y)
+	}
+}
+
+function updateListings(net) {
+	
 	var listingArray = []
 	for(var i = 0; i < document.getElementById('details').childNodes.length; i++) {
 		try {
@@ -922,58 +988,6 @@ function drawNet(net) { //Renders the active Network with the help of P5js
 			context.stroke()
 			
 		}
-	}
-}
-
-function drawNode(x,y,content,selected) { //Renders Neurons on the canvas (part of 'drawNet')
-	
-	colorMode(RGB)
-	strokeWeight(1)
-	
-	if(selected === true) {
-		fill("pink")
-	} else {
-		fill(255,255,255)
-	}
-	
-	noFill()
-	
-	if(selected == false) {
-		if(content == 0) {
-			strokeWeight(2)
-			stroke(119,187,221)
-			ellipse(x,y,nodeRadius*2,nodeRadius*2)
-		} else {
-			strokeWeight(2)
-			stroke(119,187,221)
-			arc(x,y,nodeRadius*2,nodeRadius*2,PI + HALF_PI + content*2*PI,PI + HALF_PI)
-			stroke(0,255,255)
-			arc(x,y,nodeRadius*2,nodeRadius*2,PI + HALF_PI,PI + HALF_PI + content*2*PI)
-		}
-	} else {
-		if(content == 0) {
-			strokeWeight(2)
-			stroke(119,187,221)
-			ellipse(x,y,nodeRadius*2,nodeRadius*2)
-		} else {
-			strokeWeight(2)
-			stroke(255,200,200)
-			arc(x,y,nodeRadius*2,nodeRadius*2,PI + HALF_PI + content*2*PI,PI + HALF_PI)
-			// stroke(0,255,0)
-			stroke(255,0,0)
-			arc(x,y,nodeRadius*2,nodeRadius*2,PI + HALF_PI,PI + HALF_PI + content*2*PI)
-		}
-	}
-	
-	strokeWeight(1)
-	stroke(255)
-	fill(0)
-	textSize(nodeRadius)
-	textAlign(CENTER,CENTER)
-	try {
-		text(content.toFixed(2),x,y)
-	} catch(err) {
-		text(0,x,y)
 	}
 }
 
