@@ -1,6 +1,13 @@
 
+// IDEAS:
+// - Make a simple doom clone to train on
+// - Make a game similar to 'Three body problem'
+// - Make an option to upload personal image data
+
 // TODO:
-// - Add a proper options menu
+// - Add option for graphcanvas to show learning history plot instead of bar graph
+// - Add cross-entropy cost function
+// - Add new training tasks (2d video game)
 
 // Please forgive me for my sins
 // OMG Clean this at some point... 95% of these are unnecessary now
@@ -37,6 +44,7 @@ var benchThis = 0
 var benchLast = 0
 var benchDiff = 0
 var scrollMode = 0
+var stopIncorrect = false
 
 function setup() { //P5js calls this function on start-up
 	
@@ -144,9 +152,15 @@ function toggleRenderMode() {
 	
 	if (networks[selectedNet].canvasData.renderMode == 1) {
 		networks[selectedNet].canvasData.renderMode = 0
+		document.getElementById('renderModeText').innerHTML = "Standard"
 	} else {
 		networks[selectedNet].canvasData.renderMode = 1
+		document.getElementById('renderModeText').innerHTML = "Experimental"
 	}
+}
+
+function toggleStopIncorrect() {
+	stopIncorrect = !stopIncorrect
 }
 
 function netTemp(x) {
@@ -387,6 +401,8 @@ function stop() { //Halts and Resumed the networks progress
 	
 	if(document.getElementById('stopToggle').innerHTML === 'Stop') {
 		learn = false
+		document.getElementById('stopToggle').innerHTML = 'Go'
+	} else if (document.getElementById('stopToggle').innerHTML === 'Paused'){
 		document.getElementById('stopToggle').innerHTML = 'Go'
 	} else {
 		learn = true
@@ -734,10 +750,20 @@ function MNISTParse(number) { //Generates some of the required Input data for MN
 		}
 	}
 	
-	if(maxIndex === number) {
+	if(maxIndex === number) { // Network was correct
 		networks[selectedNet].lastCorrects.unshift(1)
-	} else {
+	} else {				  // Network was incorrect
 		networks[selectedNet].lastCorrects.unshift(0)
+		if(stopIncorrect) {
+			learn = false
+			document.getElementById('stopToggle').innerHTML = 'Paused'
+			setTimeout(function(){
+				if (document.getElementById('stopToggle').innerHTML != 'Go') {
+					learn = true;
+					document.getElementById('stopToggle').innerHTML = 'Stop';
+				}
+			}, 1000)
+		}
 	}
 	
 	lastInputs.push(number)

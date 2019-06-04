@@ -377,7 +377,13 @@ div {
 	float: right;
 	padding-right: 1vh;
 	padding-top: 0.5vh;
-	/* background-color: pink; */
+	/* background-color: orange; */
+	color: rgba(0,0,0,0);
+	transition: color 0.4s;
+}
+
+.checkContainer:hover {
+	color: rgba(0,0,0,0.5)
 }
 
 /* The switch - the box around the slider */
@@ -386,6 +392,7 @@ div {
 	display: inline-block;
 	width: 10vh;
 	height: 4vh;
+	float: right;
 }
 
 /* Hide default HTML checkbox */
@@ -434,6 +441,15 @@ input:checked + .check:before {
 	-webkit-transform: translateX(5vh);
 	-ms-transform: translateX(5vh);
 	transform: translateX(6vh);
+}
+
+.statusContainer {
+	height: 4vh;
+	font-size: 4vh;
+	float: left;
+	/* background-color: pink; */
+	text-align: right;
+	padding-right: 1vh;
 }
 
 #description {
