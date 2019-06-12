@@ -450,6 +450,9 @@ input:checked + .check:before {
 	/* background-color: pink; */
 	text-align: right;
 	padding-right: 1vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 #description {
