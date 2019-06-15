@@ -1017,6 +1017,15 @@ function updateListings(net) {
 	}
 }
 
+function benchMark(name) {
+	this.name = name
+	this.start = new Date()
+	this.end = function() {
+		console.log(this.name + ": " + (new Date() - this.start))
+		return this.name + ": " + (new Date() - this.start)
+	}
+}
+
 function temp() {
 	console.log('0', networks[selectedNet].canvasData.layerData[2][0])
 	console.log('1', networks[selectedNet].canvasData.layerData[2][1])
