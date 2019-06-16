@@ -1,5 +1,5 @@
 
-const gpu = new GPU()
+//const gpu = new GPU()
 
 function network(id,detailsArray) {
 	this.id = id
