@@ -160,6 +160,7 @@ function network_matrix(id, detailsArray) {
 	this.type = "matrix"
 	this.LR = 0.1
 	this.lastCorrects = []
+	this.lastAccuracies = []
 	this.layers = [] // this.layers[layer][neuron][[value, activation, activation_d, error],[bias, weight, weight , weight,...],[bias_D, weight_D, weight_D, weight_D,...]]
 	this.canvasData = {
 		layerData:new Array(detailsArray.length),// cols[Neurons in layer i, heightDiv for this layer, Scroll value for this layer, number of Neurons displayable, First displayable Neuron]

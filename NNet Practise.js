@@ -18,6 +18,7 @@ var MNISTCanvas = document.getElementById('MNISTCanvas')
 var MNISTctx = MNISTCanvas.getContext('2d')
 var graphCanvas = document.getElementById('graphCanvas')
 var graphCanvasCTX = graphCanvas.getContext('2d')
+var graphCanvasMode = 0
 var result = []
 var input = 0
 var inputArray = []
@@ -135,6 +136,12 @@ function draw() { //P5js loops this function 60 times per second (as defined by 
 	count = count/networks[selectedNet].lastCorrects.length
 	document.getElementById('error').innerHTML = (count*100).toFixed(1) + '%'
 	
+	//networks[selectedNet].lastAccuracies.unshift(count)
+	
+	// if(networks[selectedNet].lastAccuracies.length > 1000) {
+		// networks[selectedNet].lastAccuracies.length = 1000
+	// }
+	
 	drawGraphCanvas()
 	
 	turboAdjust()
@@ -156,6 +163,16 @@ function toggleRenderMode() {
 	} else {
 		networks[selectedNet].canvasData.renderMode = 1
 		document.getElementById('renderModeText').innerHTML = "Experimental"
+	}
+}
+
+function toggleGraphMode() {
+	if(graphCanvasMode == 0) {
+		graphCanvasMode = 1
+		document.getElementById('graphModeText').innerHTML = "Graph"
+	} else {
+		graphCanvasMode = 0
+		document.getElementById('graphModeText').innerHTML = "Bar"
 	}
 }
 
@@ -766,32 +783,51 @@ function MNISTParse(number) { //Generates some of the required Input data for MN
 		}
 	}
 	
+	accuracy = networks[selectedNet].lastCorrects.reduce(function(total, num) {return total + num})/networks[selectedNet].lastCorrects.length // Average of lastCorrects
+	networks[selectedNet].lastAccuracies.unshift(accuracy)
+	
 	lastInputs.push(number)
 }
 
 function drawGraphCanvas() {
 	
 	graphCanvasCTX.clearRect(0, 0, graphCanvas.width, graphCanvas.height)
-	for(var i = 0; i < graphCanvas.width; i++) {
-		if(i > graphCanvas.width) {
-			break;
-		} else {
-			if(networks[selectedNet].lastCorrects[i] === 1) {
-				graphCanvasCTX.strokeStyle = "#00d2ff"
-			} else if(networks[selectedNet].lastCorrects[i] === 0) {
-				graphCanvasCTX.strokeStyle = "#008cff"
+	
+	if(graphCanvasMode == 0) {
+		for(var i = 0; i < graphCanvas.width; i++) {
+			if(i > graphCanvas.width) {
+				break;
 			} else {
-				graphCanvasCTX.strokeStyle = "#000000"
+				if(networks[selectedNet].lastCorrects[i] === 1) {
+					graphCanvasCTX.strokeStyle = "#00d2ff"
+				} else if(networks[selectedNet].lastCorrects[i] === 0) {
+					graphCanvasCTX.strokeStyle = "#008cff"
+				} else {
+					graphCanvasCTX.strokeStyle = "#000000"
+				}
+				graphCanvasCTX.beginPath()
+				graphCanvasCTX.imageSmoothingEnabled = false
+				graphCanvasCTX.moveTo(i+1.5,0)
+				graphCanvasCTX.lineTo(i+1.5,graphCanvas.height)
+				graphCanvasCTX.stroke()
+				graphCanvasCTX.closePath()
 			}
-			graphCanvasCTX.beginPath()
-			graphCanvasCTX.imageSmoothingEnabled = false
-			graphCanvasCTX.moveTo(i+1.5,0)
-			graphCanvasCTX.lineTo(i+1.5,graphCanvas.height)
-			graphCanvasCTX.stroke()
-			graphCanvasCTX.closePath()
+		}
+	} else if(graphCanvasMode == 1) {
+		for(var i = 0; i < graphCanvas.width; i++) {
+			if(i > graphCanvas.width) {
+				break;
+			} else {
+				graphCanvasCTX.strokeStyle = "#008cff"
+				graphCanvasCTX.beginPath()
+				graphCanvasCTX.imageSmoothingEnabled = false
+				graphCanvasCTX.moveTo(i+1.5,graphCanvas.height)
+				graphCanvasCTX.lineTo(i+1.5,graphCanvas.height - graphCanvas.height*networks[selectedNet].lastAccuracies[Math.floor((i/graphCanvas.width)*networks[selectedNet].lastAccuracies.length)])
+				graphCanvasCTX.stroke()
+				graphCanvasCTX.closePath()
+			}
 		}
 	}
-	
 }
 
 function drawNet(net) { //Renders the active Network with the help of P5js
